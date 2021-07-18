@@ -1,0 +1,25 @@
+{
+	"pages": {
+		"main": {
+			"helmet": {
+				"title": "Music Quiz | Log in"
+			},
+			"title": "Josholaus Music Quiz",
+			"subtitle": "A super duper awesome Spotify music quiz!",
+			"login": "Log in with Spotify"
+		},
+		"player": {
+			"helmet": {
+				"title": "Music Quiz | Player"
+			},
+			"title": "Music Quiz Player"
+		},
+		"404": {
+			"helmet": {
+				"title": "Music Quiz | 404"
+			},
+			"title": "404",
+			"subtitle": "Sorry, this page could not be found"
+		}
+	}
+}

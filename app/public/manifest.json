@@ -1,0 +1,15 @@
+{
+  "short_name": "Music Quiz",
+  "name": "Music Quiz App by Josholaus",
+  "icons": [
+    {
+      "src": "favicon.jpeg",
+      "type": "image/jpeg",
+      "sizes": "465x465"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

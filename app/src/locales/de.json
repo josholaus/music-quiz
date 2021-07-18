@@ -1,0 +1,25 @@
+{
+	"pages": {
+		"main": {
+			"helmet": {
+				"title": "Music Quiz | Anmelden"
+			},
+			"title": "Josholaus Music Quiz",
+			"subtitle": "Heast hawara a richtig hoassa schas",
+			"login": "Mit Spotify anmelden"
+		},
+		"player": {
+			"helmet": {
+				"title": "Music Quiz | Player"
+			},
+			"title": "Music Quiz Player"
+		},
+		"404": {
+			"helmet": {
+				"title": "Music Quiz | 404"
+			},
+			"title": "404",
+			"subtitle": "Sorry, diese Seite existiert nicht"
+		}
+	}
+}
