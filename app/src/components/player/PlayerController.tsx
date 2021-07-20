@@ -58,7 +58,7 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 		<div className="w-full mt-3 flex flex-row bg-black rounded-md">
 			<div className="text-white">
 				<img
-					className="h-40 w-40"
+					className="h-64 w-64"
 					alt="Cover Art"
 					src={
 						!currentSong.album
@@ -67,8 +67,8 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 					}
 				/>
 			</div>
-			<div className="flex-1 text-white py-5 px-8">
-				<div>
+			<div className="flex-1 my-auto text-white py-5 px-8">
+				<div className="font-bold text-3xl">
 					{currentSong.name ? (
 						currentSong.name
 					) : (
@@ -77,14 +77,17 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 						</Translation>
 					)}
 				</div>
+				<div className="font-bold">
+					{currentSong.artists
+						? currentSong.artists.map((v) => v.name).join(', ')
+						: null}
+				</div>
 				<div>
-					{currentSong.artists ? (
-						currentSong.artists.map((v) => v.name).join(', ')
-					) : (
-						<Translation>
-							{(t) => t('pages.player.controller.loading')}
-						</Translation>
-					)}
+					{currentSong.album
+						? currentSong.album.name !== currentSong.name
+							? currentSong.album.name
+							: null
+						: null}
 				</div>
 				<div className="flex flex-row justify-center mt-5">
 					<PlayButton action={toggleSong} playing={playing} />
