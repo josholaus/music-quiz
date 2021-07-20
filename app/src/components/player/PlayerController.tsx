@@ -2,6 +2,7 @@ import React from 'react'
 import { Translation } from 'react-i18next'
 import NextButton from './buttons/NextButton'
 import PlayButton from './buttons/PlayButton'
+import ShowButton from './buttons/ShowButton'
 import Player from './Player'
 import { PlayerComponentProperties } from './PlayerComponent'
 
@@ -15,8 +16,10 @@ interface PlayerControllerProperties {
 export default function PlaylistController(props: PlayerControllerProperties) {
 	const [currentSong, setCurrentSong] = React.useState({} as spotify.Track)
 	const [playing, setPlaying] = React.useState(false)
+	const [shown, setShown] = React.useState(false)
 
 	const playNextSong = () => {
+		setShown(false)
 		props.player
 			.nextSong(props.playerProperties.accessToken)
 			.then(() => {
@@ -35,6 +38,10 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 			.then(() => {
 				setPlaying(!playing)
 			})
+	}
+
+	const toggleShow = () => {
+		setShown(!shown)
 	}
 
 	React.useEffect(() => {
@@ -63,14 +70,20 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 					src={
 						!currentSong.album
 							? '/assets/placeholder.svg'
-							: currentSong.album.images[0].url
+							: shown
+							? currentSong.album.images[0].url
+							: '/assets/question.svg'
 					}
 				/>
 			</div>
 			<div className="flex-1 my-auto text-white py-5 px-8">
 				<div className="font-bold text-3xl">
 					{currentSong.name ? (
-						currentSong.name
+						shown ? (
+							currentSong.name
+						) : (
+							<span className="text-5xl">?</span>
+						)
 					) : (
 						<Translation>
 							{(t) => t('pages.player.controller.loading')}
@@ -78,18 +91,19 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 					)}
 				</div>
 				<div className="font-bold">
-					{currentSong.artists
+					{currentSong.artists && shown
 						? currentSong.artists.map((v) => v.name).join(', ')
 						: null}
 				</div>
 				<div>
-					{currentSong.album
+					{currentSong.album && shown
 						? currentSong.album.name !== currentSong.name
 							? currentSong.album.name
 							: null
 						: null}
 				</div>
 				<div className="flex flex-row justify-center mt-5">
+					<ShowButton action={toggleShow} shown={shown} />
 					<PlayButton action={toggleSong} playing={playing} />
 					<NextButton action={playNextSong} />
 				</div>
