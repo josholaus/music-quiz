@@ -15,7 +15,7 @@ git clone https://github.com/Josholaus/music-quiz
 Install dependencies
 
 ```shell
-cd app && npm install && cd ../server && npm install && cd ..
+cd ./app && npm install && cd ../server && npm install && cd ..
 ```
 
 Register an application in the [Spotify developer dashboard](https://developer.spotify.com/dashboard/login). Then insert `CLIENT_ID`, `CLIENT_SECRET` and `REDIRECT_URI` in a newly created .env file in `/server/`.
@@ -23,7 +23,7 @@ Register an application in the [Spotify developer dashboard](https://developer.s
 And finally, run the app.
 
 ```shell
-cd app & npm run start && cd ../server && npm run start
+cd ./app & npm run start && cd ../server && npm run start
 ```
 
 # Build

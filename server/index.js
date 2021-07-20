@@ -12,7 +12,7 @@ function main(args) {
 		path: path.join(__dirname, debug ? '/.env.local' : '/.env'),
 		debug: debug,
 	})
-	process.env.DEBUG = debug;
+	process.env.DEBUG = debug
 	log4js.configure({
 		appenders: {
 			console: { type: 'console' },
@@ -31,11 +31,7 @@ function main(args) {
 	const server = express()
 	configureMiddleware(server, logger)
 	configureRoutes(server)
-	const port = process.env.PORT
-	if (!port) {
-		logger.error('Port is not defined, qutting')
-		process.exit(-1)
-	}
+	const port = process.env.PORT || 8000
 	server.listen(port, () => {
 		logger.info(`Now listening on http://127.0.0.1:${port}/`)
 	})
