@@ -32,7 +32,7 @@ Or just the frontend (this might be what you want if you want to work on the fro
 cd ./app && npm run start
 ```
 
-# Build
+## Build
 
 This repository offers a built Docker image through [GitHub's package registry](https://github.com/josholaus/music-quiz/packages/), so if you are just looking to set up your own instance of Music Quiz, you can use that.
 
