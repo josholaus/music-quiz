@@ -20,10 +20,16 @@ cd ./app && npm install && cd ../server && npm install && cd ..
 
 Register an application in the [Spotify developer dashboard](https://developer.spotify.com/dashboard/login). Then insert `CLIENT_ID`, `CLIENT_SECRET` and `REDIRECT_URI` in a newly created .env file in `/server/`.
 
-And finally, run the app.
+And finally, run the app (with backend).
 
 ```shell
-cd ./app & npm run start && cd ../server && npm run start
+cd ./app & npm run build && cd ../server && npm run start
+```
+
+Or just the frontend (this might be what you want if you want to work on the frontend):
+
+```
+cd ./app && npm run start
 ```
 
 # Build
