@@ -63,9 +63,9 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 	}, [])
 	return (
 		<div className="w-full mt-3 flex flex-row bg-black rounded-md">
-			<div className="text-white">
+			<div className="text-white my-auto">
 				<img
-					className="h-64 w-64"
+					className="h-64 w-64 rounded-sm"
 					alt="Cover Art"
 					src={
 						!currentSong.album
