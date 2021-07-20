@@ -1,7 +1,7 @@
 import React from 'react'
-import Button from './Button'
+import Button, { ButtonProperties } from './Button'
 
-export default function SpotifyButton(props: any) {
+export default function SpotifyButton(props: ButtonProperties) {
 	return (
 		<Button
 			className={`${props.className} bg-green-400 hover:bg-green-300`}

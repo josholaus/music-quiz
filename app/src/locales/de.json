@@ -12,6 +12,16 @@
 			"helmet": {
 				"title": "Music Quiz | Player"
 			},
+			"playlist": {
+				"submit": "Absenden"
+			},
+			"controller": {
+				"loading": "Lädt ...",
+				"alt": "Cover Art",
+				"next": "Weiter",
+				"pause": "Pausieren",
+				"play": "Abspielen"
+			},
 			"title": "Music Quiz Player"
 		},
 		"404": {

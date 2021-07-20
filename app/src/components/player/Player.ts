@@ -3,6 +3,7 @@ import axios from 'axios'
 const BASE_URL = 'https://api.spotify.com/v1'
 
 class Player {
+	private playing = false
 	private currentSong: spotify.Track | undefined
 	private storedTracks: spotify.Track[] = []
 
@@ -33,7 +34,9 @@ class Player {
 				.sort(() => Math.random() - 0.5)
 				.slice(0, this.songsPerPlaylist ?? 100)
 		}
-		return res.data.tracks.items.map((v: spotify.PlaylistItem) => v.track)
+		return res.data.tracks.items
+			.map((v: spotify.PlaylistItem) => v.track)
+			.sort(() => Math.random() - 0.5)
 	}
 
 	public async getMoreTracks(
@@ -47,60 +50,65 @@ class Player {
 			},
 		})
 		let tracks = res.data.items
-		return res.data.next !== null ? (await this.getMoreTracks(res.data.next, accessToken)).concat(tracks) : tracks
+		return res.data.next !== null
+			? (await this.getMoreTracks(res.data.next, accessToken)).concat(
+					tracks,
+			  )
+			: tracks
 	}
 
-	public fetchPlaylistTracks(accessToken: string) {
-		return null
-		/*
-	return new Promise((resolve, reject) => {
-		const playlistValues = $('#playlist-values').val().split('\n')
-		if (playlistValues === playlists) {
-			return // playlists did not change, don't refetch
-		}
-		playlists = playlistValues
-		const promises = playlistValues.map((v: any) =>
-			getPlaylistTracks(v.split('/')[4].split('?')[0], accessToken),
-		)
-		Promise.all(promises)
-			.then((values) => {
-				let items = values.flat()
-				let exists: any[] = []
-				let toRemove: any[] = []
-				items.forEach((v: any) => {
-					if (exists.includes(v.id)) {
-						toRemove.push(v)
-					}
-					exists.push(v.id)
+	public fetchPlaylistTracks(
+		playlistInput: string,
+		accessToken: string,
+	): Promise<void> {
+		return new Promise((resolve, reject) => {
+			const playlistValues = playlistInput.split('\n')
+			if (playlistValues === this.playlists) {
+				return // playlists did not change, don't refetch
+			}
+			this.playlists = playlistValues
+			// TODO: Implement proper input checking and sanitization
+			const promises = playlistValues.map((v: string) =>
+				this.getPlaylistTracks(
+					v.split('/')[4].split('?')[0],
+					accessToken,
+				),
+			)
+			Promise.all(promises)
+				.then((tracks) => {
+					let flatTracks = tracks.flat()
+					let existingIds: string[] = []
+					let toRemove: spotify.Track[] = []
+					flatTracks.forEach((track) => {
+						if (existingIds.includes(track.id)) {
+							toRemove.push(track)
+						}
+						existingIds.push(track.id)
+					})
+					flatTracks = flatTracks.filter((v) => !toRemove.includes(v))
+					this.storedTracks = flatTracks
+					resolve()
 				})
-				items = items.filter((v) => !toRemove.includes(v))
-				this.storedTracks = items
-				// $('#left-songs-number').html(this.storedTracks.length)
-				resolve(null)
-			})
-			.catch((err) => {
-				console.log(err)
-				alert(
-					'Error fetching playlists. Do you have access to all of them?',
-				)
-			})
-	})*/
+				.catch((err) => {
+					reject(err)
+				})
+		})
 	}
 
 	public async nextSong(accessToken: string): Promise<void> {
-		this.storedTracks = this.storedTracks.filter((v: any) => {
+		this.storedTracks = this.storedTracks.filter((v) => {
 			return v.id !== this.currentSong?.id
 		})
-		// $('#left-songs-number').html(this.storedTracks.length)
 		await this.playRandomSong(this.storedTracks, accessToken)
 	}
 
-	public async playRandomSong(items: spotify.Track[], accessToken: string): Promise<void> {
+	public async playRandomSong(
+		items: spotify.Track[],
+		accessToken: string,
+	): Promise<void> {
 		const randomTrack = items[Math.floor(Math.random() * items.length)]
-		const artists = randomTrack.artists?.map((v: any) => v.name).join(', ')
-		const name = randomTrack.name
-		// $('#track-info').html(artists + ' - "' + name + '"')
-		await axios({
+		console.log('yeetus')
+		let res = await axios({
 			url: `${BASE_URL}/me/player/play`,
 			method: 'PUT',
 			data: JSON.stringify({
@@ -121,20 +129,20 @@ class Player {
 				'Content-Type': 'application/json',
 			},
 		})
-		this.currentSong = randomTrack
-		// $('#pause-playlist').html('⏸')
+		if (res.status >= 200 && res.status < 300) {
+			this.currentSong = randomTrack
+			this.playing = true
+		} else {
+			throw new Error(
+				`Could not complete Spotify request (code ${res.status}): ${res.data}`,
+			)
+		}
 	}
 
-	public async pausePlayback(accessToken: string): Promise<void> {
-		// const element = $('#pause-playlist')
-		var url = ''
-		/*
-	if (element.html() === '⏸') {
-		url = `https://api.spotify.com/v1/me/player/pause`
-	} else {
-		url = `https://api.spotify.com/v1/me/player/play`
-	}
-	*/
+	public async togglePlayback(accessToken: string): Promise<void> {
+		var url = this.playing
+			? `${BASE_URL}/me/player/pause`
+			: `${BASE_URL}/me/player/play`
 		await axios({
 			url: url,
 			method: 'PUT',
@@ -142,13 +150,7 @@ class Player {
 				Authorization: 'Bearer ' + accessToken,
 			},
 		})
-		/*
-			if (element.html() === '⏸') {
-				element.html('⏵️')
-			} else {
-				element.html('⏸')
-			}
-			*/
+		this.playing = !this.playing
 	}
 }
 

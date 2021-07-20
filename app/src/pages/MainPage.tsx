@@ -1,12 +1,13 @@
 import React from 'react'
 import { useLocation, Redirect } from 'react-router-dom'
-import PlayerComponent, { PlayerProperties } from '../components/player/PlayerComponent'
+import PlayerComponent from '../components/player/PlayerComponent'
 
 export default function MainPage() {
 	const { hash } = useLocation()
 	const params = getHashParams(hash)
 	if (
-		params.hasOwnProperty('access_token') && params.hasOwnProperty('refresh_token')
+		params.hasOwnProperty('access_token') &&
+		params.hasOwnProperty('refresh_token')
 	) {
 		return (
 			<div className="w-full md:px-12">
