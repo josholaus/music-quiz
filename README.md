@@ -15,15 +15,30 @@ git clone https://github.com/Josholaus/music-quiz
 Install dependencies
 
 ```shell
-npm install
+cd app && npm install && cd ../server && npm install && cd ..
 ```
 
-Register an application in the [Spotify developer dashboard](https://developer.spotify.com/dashboard/login). Then insert `CLIENT_ID`, `CLIENT_SECRET` and `REDIRECT_URI` in a newly created .env file at the project root.
+Register an application in the [Spotify developer dashboard](https://developer.spotify.com/dashboard/login). Then insert `CLIENT_ID`, `CLIENT_SECRET` and `REDIRECT_URI` in a newly created .env file in `/server/`.
 
 And finally, run the app.
 
 ```shell
-npm run start
+cd app & npm run start && cd ../server && npm run start
+```
+
+# Build
+
+This repository offers a built Docker image through [GitHub's package registry](https://github.com/josholaus/music-quiz/packages/), so if you are just looking to set up your own instance of Music Quiz, you can use that.
+
+```
+docker pull docker.pkg.github.com/josholaus/music-quiz/app:latest
+docker run -d -p 8000:8000 josholaus/music-quiz/app:latest
+```
+
+If you want to build your own image however, you can use the Dockerfile of this repository to build it:
+
+```shell
+docker build -t music-quiz .
 ```
 
 ## License

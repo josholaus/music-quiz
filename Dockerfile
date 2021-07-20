@@ -10,5 +10,5 @@ RUN cd /home/app/musicquiz/server && npm install
 # Compile and install the React app
 RUN cd /home/app/musicquiz/app && npm install && npm run build
 
-EXPOSE 80
+EXPOSE 8000
 CMD [ "node", "/home/app/musicquiz/server" ]
