@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next'
 import Button from '../buttons/Button'
 
 interface PlaylistInputProperties {
+	values?: string
 	callback: (value: string) => void
 }
 
 export default function PlaylistInput(props: PlaylistInputProperties) {
-	var value = ''
+	var value = props.values ?? ''
 	const { t } = useTranslation()
 
 	return (
@@ -17,10 +18,9 @@ export default function PlaylistInput(props: PlaylistInputProperties) {
 			</p>
 			<textarea
 				id="playlist-values"
-				rows={20}
-				cols={80}
 				placeholder="Playlist URLs"
-				className="p-3 border border-gray-500 rounded-sm"
+				className="w-full p-3 border border-gray-500 rounded-sm"
+				defaultValue={props.values}
 				onChange={(event) => (value = event.target.value)}></textarea>
 			<Button
 				className="bg-green-300 mx-auto mt-5"

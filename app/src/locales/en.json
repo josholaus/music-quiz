@@ -22,7 +22,8 @@
 				"pause": "Pause",
 				"play": "Play",
 				"show": "Show song info",
-				"hide": "Hide song info"
+				"hide": "Hide song info",
+				"edit": "Edit playlists"
 			},
 			"title": "Music Quiz Player"
 		},

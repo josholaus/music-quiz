@@ -17,6 +17,10 @@ class Player {
 		return this.currentSong
 	}
 
+	public getPlaylists(): string[] {
+		return this.playlists
+	}
+
 	public async getPlaylistTracks(
 		playlistId: string,
 		accessToken: string,
@@ -64,6 +68,7 @@ class Player {
 		return new Promise((resolve, reject) => {
 			const playlistValues = playlistInput.split('\n')
 			if (playlistValues === this.playlists) {
+				resolve()
 				return // playlists did not change, don't refetch
 			}
 			this.playlists = playlistValues
@@ -107,7 +112,6 @@ class Player {
 		accessToken: string,
 	): Promise<void> {
 		const randomTrack = items[Math.floor(Math.random() * items.length)]
-		console.log('yeetus')
 		let res = await axios({
 			url: `${BASE_URL}/me/player/play`,
 			method: 'PUT',

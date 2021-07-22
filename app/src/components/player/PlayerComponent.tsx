@@ -12,23 +12,26 @@ export interface PlayerComponentProperties {
 }
 
 const PlayerViews = {
-	inputView: PlaylistInput,
-	controllerView: PlaylistController,
+	InputView: PlaylistInput,
+	ControllerView: PlaylistController,
 }
 
 export default function PlayerComponent(props: PlayerComponentProperties) {
 	const { t } = useTranslation()
-	const accessToken = props.accessToken
-	const refreshToken = props.refreshToken
 	const player = new Player([])
 
 	const controllerViewCallback = () => {
-		setCurrentView(<PlayerViews.inputView callback={inputViewCallback} />)
+		setCurrentView(
+			<PlayerViews.InputView
+				callback={inputViewCallback}
+				values={player.getPlaylists()?.join('\n')}
+			/>,
+		)
 	}
 
 	const inputViewCallback = (values: string) => {
 		setCurrentView(
-			<PlayerViews.controllerView
+			<PlayerViews.ControllerView
 				player={player}
 				playerProperties={props}
 				playlists={values}
@@ -38,7 +41,7 @@ export default function PlayerComponent(props: PlayerComponentProperties) {
 	}
 
 	const [currentView, setCurrentView] = React.useState(
-		<PlayerViews.inputView callback={inputViewCallback} />,
+		<PlayerViews.InputView callback={inputViewCallback} />,
 	)
 
 	return (

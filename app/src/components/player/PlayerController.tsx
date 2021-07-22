@@ -1,5 +1,6 @@
 import React from 'react'
 import { Translation } from 'react-i18next'
+import EditPlaylistsButton from './buttons/EditPlaylistsButton'
 import NextButton from './buttons/NextButton'
 import PlayButton from './buttons/PlayButton'
 import ShowButton from './buttons/ShowButton'
@@ -60,7 +61,8 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 			playNextSong()
 		}
 		fetchSongs()
-	}, [])
+	}, [props])
+
 	return (
 		<div className="w-full mt-3 flex flex-row bg-black rounded-md">
 			<div className="text-white my-auto">
@@ -106,6 +108,11 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 					<ShowButton action={toggleShow} shown={shown} />
 					<PlayButton action={toggleSong} playing={playing} />
 					<NextButton action={playNextSong} />
+				</div>
+				<div className="flex flex-row justify-center mt-2">
+					<EditPlaylistsButton
+						action={() => props.controllerViewCallback()}
+					/>
 				</div>
 			</div>
 		</div>
