@@ -20,7 +20,9 @@
 				"alt": "Cover Art",
 				"next": "Next",
 				"pause": "Pause",
-				"play": "Play"
+				"play": "Play",
+				"show": "Show song info",
+				"hide": "Hide song info"
 			},
 			"title": "Music Quiz Player"
 		},
