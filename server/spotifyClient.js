@@ -13,6 +13,8 @@ class SpotifyClient {
 			'user-read-playback-state',
 			'user-modify-playback-state',
 			'user-read-currently-playing',
+			'user-read-email', // ...
+			'user-read-private', // these two are needed according to https://spoti.fi/2TqRxM0
 		].join(' ')
 		this.auth_header =
 			'Basic ' +

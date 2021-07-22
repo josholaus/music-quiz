@@ -11,10 +11,17 @@
 		<link rel="apple-touch-icon" href="%PUBLIC_URL%/favicon.jpeg" />
 		<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 		<link rel="icon" href="%PUBLIC_URL%/favicon.jpeg" />
+		<!-- Import for Spotify Web Playback SDK, see https://spoti.fi/2V6Gjg1 -->
+		<script src="https://sdk.scdn.co/spotify-player.js"></script>
 		<title>Music Quiz</title>
 	</head>
 	<body>
 		<noscript>You need to enable JavaScript to run this app.</noscript>
 		<div id="root"></div>
+		<script>
+			window.onSpotifyWebPlaybackSDKReady = () => {
+				window.Spotify = Spotify
+			}
+		</script>
 	</body>
 </html>

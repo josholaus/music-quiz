@@ -18,7 +18,7 @@ const PlayerViews = {
 
 export default function PlayerComponent(props: PlayerComponentProperties) {
 	const { t } = useTranslation()
-	const player = new Player([])
+	const player = new Player([], props.accessToken)
 
 	const controllerViewCallback = () => {
 		setCurrentView(

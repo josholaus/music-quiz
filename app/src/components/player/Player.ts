@@ -2,16 +2,98 @@ import axios from 'axios'
 
 const BASE_URL = 'https://api.spotify.com/v1'
 
+declare global {
+	interface Window {
+		Spotify: typeof Spotify
+	}
+}
+
 class Player {
+	/**
+	 * The Spotify Playback SDK instance
+	 */
+	private player: Spotify.Player | undefined
+	/**
+	 * The unique ID of our Spotify player
+	 */
+	private deviceId: {} | undefined
+	/**
+	 * True when our player is playing music, false otherwise
+	 */
 	private playing = false
+	/**
+	 * The currently played Spotify track
+	 */
 	private currentSong: spotify.Track | undefined
+	/**
+	 * The tracks stored by the current playlist selection
+	 */
 	private storedTracks: spotify.Track[] = []
 
 	constructor(
 		private playlists: string[],
+		accessToken: string,
 		private fastForwardValue?: number[],
 		private songsPerPlaylist?: number,
-	) {}
+	) {
+		const checkPlayerInterval = setInterval(() => {
+			if (this.checkForPlayer(accessToken)) {
+				clearInterval(checkPlayerInterval)
+			}
+		}, 500)
+	}
+
+	private checkForPlayer(accessToken: string): boolean {
+		if (window.Spotify !== null) {
+			this.player = new window.Spotify.Player({
+				name: 'Josholaus Music Quiz',
+				getOAuthToken: (cb) => {
+					cb(accessToken)
+				},
+				volume: 0.1,
+			})
+			this.createEventHandlers()
+			this.player.connect()
+			return true
+		}
+		return false
+	}
+
+	private createEventHandlers(): void {
+		if (!this.player) {
+			console.error(
+				'Cannot register event handlers; player is not ready!',
+			)
+			return
+		}
+		this.player.on('initialization_error', (e) => {
+			console.error(e)
+		})
+		this.player.on('authentication_error', (e) => {
+			console.error(e)
+		})
+		this.player.on('account_error', (e) => {
+			console.error(e)
+		})
+		this.player.on('playback_error', (e) => {
+			console.error(e)
+		})
+
+		// Playback status updates
+		this.player.on('player_state_changed', (state) => {
+			if (state) {
+				this.playing = !state.paused
+			}
+			console.log(state)
+		})
+
+		// Ready
+		this.player.on('ready', (data) => {
+			let { device_id } = data
+			console.log('Spotify player ready')
+			this.deviceId = device_id
+		})
+	}
 
 	public getCurrentSong(): spotify.Track | undefined {
 		return this.currentSong
@@ -113,7 +195,7 @@ class Player {
 	): Promise<void> {
 		const randomTrack = items[Math.floor(Math.random() * items.length)]
 		let res = await axios({
-			url: `${BASE_URL}/me/player/play`,
+			url: `${BASE_URL}/me/player/play?device_id=${this.deviceId}`,
 			method: 'PUT',
 			data: JSON.stringify({
 				uris: [randomTrack.uri],
