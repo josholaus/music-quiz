@@ -12,9 +12,7 @@ export default function LoginPage() {
 			</Helmet>
 			<Title>{t('pages.main.title')}</Title>
 			<Subheading className="mt-1">{t('pages.main.subtitle')}</Subheading>
-			<SpotifyLoginButton
-				className="mt-5 mx-auto"
-				link="http://localhost:8005/login">
+			<SpotifyLoginButton className="mt-5 mx-auto" link="/login">
 				{t('pages.main.login')}
 			</SpotifyLoginButton>
 		</>
