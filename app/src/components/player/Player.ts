@@ -29,6 +29,10 @@ class Player {
 	 * The tracks stored by the current playlist selection
 	 */
 	private storedTracks: spotify.Track[] = []
+	/**
+	 * Value of recent volume change in order to limit API requests
+	 */
+	private recentVolume: number = 0
 
 	constructor(
 		private playlists: string[],
@@ -50,7 +54,7 @@ class Player {
 				getOAuthToken: (cb) => {
 					cb(accessToken)
 				},
-				volume: 0.1,
+				volume: 0.25,
 			})
 			this.createEventHandlers()
 			this.player.connect()
@@ -237,6 +241,27 @@ class Player {
 			},
 		})
 		this.playing = !this.playing
+	}
+
+	private async setPlaybackVolume(volume: number, accessToken: string): Promise<void> {
+		await axios({
+			url: `${BASE_URL}/me/player/volume?device_id=${this.deviceId}&volume_percent=${volume}`,
+			method: 'PUT',
+			headers: {
+				Authorization: 'Bearer ' + accessToken,
+			}
+		})
+	}
+
+	public async setVolume(value: number, accessToken: string): Promise<void> {
+		if (value < 0 || value > 100) {
+			throw new Error('Invalid volume value!')
+		}
+		if (Math.abs(value - this.recentVolume) >= 10) {
+			await this.setPlaybackVolume(value, accessToken)
+			this.recentVolume = value
+			return
+		}
 	}
 }
 
