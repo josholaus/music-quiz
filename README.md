@@ -37,7 +37,7 @@ cd ./app && npm run start
 This repository offers a built Docker image through [GitHub's package registry](https://github.com/josholaus/music-quiz/packages/), so if you are just looking to set up your own instance of Music Quiz, you can use that.
 
 ```
-docker pull docker.pkg.github.com/josholaus/music-quiz/quiz:latest
+docker pull ghcr.io/josholaus/music-quiz/quiz:latest
 docker run -d -p 8000:8000 josholaus/music-quiz/quiz:latest
 ```
 
