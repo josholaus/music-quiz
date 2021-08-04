@@ -88,13 +88,11 @@ class Player {
 			if (state) {
 				this.playing = !state.paused
 			}
-			console.log(state)
 		})
 
 		// Ready
 		this.player.on('ready', (data) => {
 			let { device_id } = data
-			console.log('Spotify player ready')
 			this.deviceId = device_id
 		})
 	}
