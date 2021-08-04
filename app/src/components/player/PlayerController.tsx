@@ -1,11 +1,11 @@
 import React from 'react'
 import { Translation } from 'react-i18next'
+import Slider from 'react-input-slider'
 import EditPlaylistsButton from './buttons/EditPlaylistsButton'
 import NextButton from './buttons/NextButton'
 import PlayButton from './buttons/PlayButton'
 import ShowButton from './buttons/ShowButton'
 import Player from './Player'
-import Slider from 'react-input-slider'
 import { PlayerComponentProperties } from './PlayerComponent'
 
 interface PlayerControllerProperties {
@@ -20,9 +20,7 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 	const [playing, setPlaying] = React.useState(false)
 	const [shown, setShown] = React.useState(false)
 	const [volume, setVolume] = React.useState(25)
-	const [remainingSongs, setRemainingSongs] = React.useState(
-		props.player.getAvailableSongNumber() - 1,
-	)
+	const [remainingSongs, setRemainingSongs] = React.useState(-1)
 
 	const playNextSong = () => {
 		if (remainingSongs === 0) {
@@ -189,8 +187,12 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 			</div>
 			<div className="my-5 mx-auto w-max">
 				<p>
-					Remaining Songs:{' '}
-					<span className="font-bold">{remainingSongs}</span>
+					<Translation>
+						{(t) => t('pages.player.controller.remaining')}
+					</Translation>{' '}
+					<span className="font-bold">
+						{Math.max(0, remainingSongs)}
+					</span>
 				</p>
 			</div>
 		</>
