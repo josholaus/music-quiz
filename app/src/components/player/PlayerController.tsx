@@ -7,7 +7,6 @@ import ShowButton from './buttons/ShowButton'
 import Player from './Player'
 import Slider from 'react-input-slider'
 import { PlayerComponentProperties } from './PlayerComponent'
-import { statements } from '@babel/template'
 
 interface PlayerControllerProperties {
 	player: Player
@@ -21,17 +20,28 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 	const [playing, setPlaying] = React.useState(false)
 	const [shown, setShown] = React.useState(false)
 	const [volume, setVolume] = React.useState(25)
+	const [remainingSongs, setRemainingSongs] = React.useState(
+		props.player.getAvailableSongNumber() - 1,
+	)
 
 	const playNextSong = () => {
+		if (remainingSongs === 0) {
+			alert(
+				'No more songs available! Please reload the playlist or add another playlist',
+			)
+			props.controllerViewCallback()
+			return
+		}
 		setShown(false)
 		props.player
 			.nextSong(props.playerProperties.accessToken)
 			.then(() => {
 				const song = props.player.getCurrentSong()
 				setCurrentSong(song as spotify.Track)
+				setRemainingSongs(props.player.getAvailableSongNumber() - 1)
 				setPlaying(true)
 			})
-			.catch((err) => {
+			.catch(() => {
 				alert('An error has occurred. Please try again')
 			})
 	}
@@ -69,9 +79,25 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 	return (
 		<>
 			<div className="mx-auto my-5 flex w-max">
-				<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mx-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clipRule="evenodd" />
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					className="h-6 w-6 mx-4"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor">
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth={2}
+						d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+						clipRule="evenodd"
+					/>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth={2}
+						d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"
+					/>
 				</svg>
 				<div className="pt">
 					<Slider
@@ -79,7 +105,10 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 						x={volume}
 						onChange={({ x }) => {
 							setVolume(x)
-							props.player.setVolume(x, props.playerProperties.accessToken)
+							props.player.setVolume(
+								x,
+								props.playerProperties.accessToken,
+							)
 						}}
 						styles={{
 							track: {
@@ -88,12 +117,22 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 							thumb: {
 								width: 25,
 								height: 25,
-							}
+							},
 						}}
 					/>
 				</div>
-				<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mx-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					className="h-6 w-6 mx-4"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor">
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth={2}
+						d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+					/>
 				</svg>
 			</div>
 			<div className="w-full mt-3 flex flex-row bg-black rounded-md">
@@ -147,6 +186,12 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 						/>
 					</div>
 				</div>
+			</div>
+			<div className="my-5 mx-auto w-max">
+				<p>
+					Remaining Songs:{' '}
+					<span className="font-bold">{remainingSongs}</span>
+				</p>
 			</div>
 		</>
 	)

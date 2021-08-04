@@ -107,6 +107,10 @@ class Player {
 		return this.playlists
 	}
 
+	public getAvailableSongNumber(): number {
+		return this.storedTracks.length
+	}
+
 	public async getPlaylistTracks(
 		playlistId: string,
 		accessToken: string,
@@ -122,7 +126,7 @@ class Player {
 				.concat(res.data.tracks.items)
 				.map((v: spotify.PlaylistItem) => v.track)
 				.sort(() => Math.random() - 0.5)
-				.slice(0, this.songsPerPlaylist ?? 100)
+				.slice(0, this.songsPerPlaylist ?? 20)
 		}
 		return res.data.tracks.items
 			.map((v: spotify.PlaylistItem) => v.track)
@@ -243,13 +247,16 @@ class Player {
 		this.playing = !this.playing
 	}
 
-	private async setPlaybackVolume(volume: number, accessToken: string): Promise<void> {
+	private async setPlaybackVolume(
+		volume: number,
+		accessToken: string,
+	): Promise<void> {
 		await axios({
 			url: `${BASE_URL}/me/player/volume?device_id=${this.deviceId}&volume_percent=${volume}`,
 			method: 'PUT',
 			headers: {
 				Authorization: 'Bearer ' + accessToken,
-			}
+			},
 		})
 	}
 
