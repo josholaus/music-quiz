@@ -124,7 +124,7 @@ class Player {
 				.concat(res.data.tracks.items)
 				.map((v: spotify.PlaylistItem) => v.track)
 				.sort(() => Math.random() - 0.5)
-				.slice(0, this.songsPerPlaylist ?? 20)
+				.slice(0, this.songsPerPlaylist ?? 100)
 		}
 		return res.data.tracks.items
 			.map((v: spotify.PlaylistItem) => v.track)
