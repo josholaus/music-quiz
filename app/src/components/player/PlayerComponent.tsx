@@ -16,9 +16,10 @@ const PlayerViews = {
 	ControllerView: PlaylistController,
 }
 
+let player: Player
+
 export default function PlayerComponent(props: PlayerComponentProperties) {
 	const { t } = useTranslation()
-	const player = new Player([], props.accessToken)
 
 	const controllerViewCallback = () => {
 		setCurrentView(
@@ -43,6 +44,10 @@ export default function PlayerComponent(props: PlayerComponentProperties) {
 	const [currentView, setCurrentView] = React.useState(
 		<PlayerViews.InputView callback={inputViewCallback} />,
 	)
+
+	if (!player) {
+		player = new Player([], props.accessToken)
+	}
 
 	return (
 		<>

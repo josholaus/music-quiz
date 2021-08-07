@@ -33,6 +33,10 @@ class Player {
 	 * Value of recent volume change in order to limit API requests
 	 */
 	private recentVolume: number = 0
+	/**
+	 * Determines whether this player instance is ready to operate
+	 */
+	private ready = false
 
 	constructor(
 		private playlists: string[],
@@ -40,15 +44,11 @@ class Player {
 		private fastForwardValue?: number[],
 		private songsPerPlaylist?: number,
 	) {
-		const checkPlayerInterval = setInterval(() => {
-			if (this.checkForPlayer(accessToken)) {
-				clearInterval(checkPlayerInterval)
-			}
-		}, 500)
+		this.initializePlayer(accessToken)
 	}
 
-	private checkForPlayer(accessToken: string): boolean {
-		if (window.Spotify !== null) {
+	private initializePlayer(accessToken: string): void {
+		if (window.Spotify) {
 			this.player = new window.Spotify.Player({
 				name: 'Josholaus Music Quiz',
 				getOAuthToken: (cb) => {
@@ -58,9 +58,9 @@ class Player {
 			})
 			this.createEventHandlers()
 			this.player.connect()
-			return true
+		} else {
+			setTimeout(() => this.initializePlayer(accessToken), 500)
 		}
-		return false
 	}
 
 	private createEventHandlers(): void {
@@ -94,6 +94,21 @@ class Player {
 		this.player.on('ready', (data) => {
 			let { device_id } = data
 			this.deviceId = device_id
+			this.ready = true
+		})
+	}
+
+	private readyPlayer(): Promise<void> {
+		if (this.ready) {
+			return new Promise<void>((resolve) => resolve())
+		}
+		return new Promise<void>((resolve) => {
+			const i = setInterval(() => {
+				if (this.ready) {
+					clearInterval(i)
+					resolve()
+				}
+			}, 50)
 		})
 	}
 
@@ -113,6 +128,7 @@ class Player {
 		playlistId: string,
 		accessToken: string,
 	): Promise<spotify.Track[]> {
+		await this.readyPlayer()
 		let res: { data: spotify.Playlist } = await axios({
 			url: `${BASE_URL}/playlists/${playlistId}`,
 			headers: {
@@ -135,6 +151,7 @@ class Player {
 		url: string,
 		accessToken: string,
 	): Promise<spotify.PlaylistItem[]> {
+		await this.readyPlayer()
 		let res: { data: spotify.PlaylistItems } = await axios({
 			url: url,
 			headers: {
@@ -189,6 +206,7 @@ class Player {
 	}
 
 	public async nextSong(accessToken: string): Promise<void> {
+		await this.readyPlayer()
 		this.storedTracks = this.storedTracks.filter((v) => {
 			return v.id !== this.currentSong?.id
 		})
@@ -199,6 +217,7 @@ class Player {
 		items: spotify.Track[],
 		accessToken: string,
 	): Promise<void> {
+		await this.readyPlayer()
 		const randomTrack = items[Math.floor(Math.random() * items.length)]
 		let res = await axios({
 			url: `${BASE_URL}/me/player/play?device_id=${this.deviceId}`,
@@ -232,6 +251,7 @@ class Player {
 	}
 
 	public async togglePlayback(accessToken: string): Promise<void> {
+		await this.readyPlayer()
 		var url = this.playing
 			? `${BASE_URL}/me/player/pause`
 			: `${BASE_URL}/me/player/play`
@@ -249,6 +269,7 @@ class Player {
 		volume: number,
 		accessToken: string,
 	): Promise<void> {
+		await this.readyPlayer()
 		await axios({
 			url: `${BASE_URL}/me/player/volume?device_id=${this.deviceId}&volume_percent=${volume}`,
 			method: 'PUT',
@@ -259,6 +280,7 @@ class Player {
 	}
 
 	public async setVolume(value: number, accessToken: string): Promise<void> {
+		await this.readyPlayer()
 		if (value < 0 || value > 100) {
 			throw new Error('Invalid volume value!')
 		}

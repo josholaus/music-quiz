@@ -22,7 +22,7 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 	const [volume, setVolume] = React.useState(25)
 	const [remainingSongs, setRemainingSongs] = React.useState(-1)
 
-	const playNextSong = () => {
+	const playNextSong = React.useCallback(async () => {
 		if (remainingSongs === 0) {
 			alert(
 				'No more songs available! Please reload the playlist or add another playlist',
@@ -31,48 +31,45 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 			return
 		}
 		setShown(false)
-		props.player
-			.nextSong(props.playerProperties.accessToken)
-			.then(() => {
-				const song = props.player.getCurrentSong()
-				setCurrentSong(song as spotify.Track)
-				setRemainingSongs(props.player.getAvailableSongNumber() - 1)
-				setPlaying(true)
-			})
-			.catch(() => {
-				alert('An error has occurred. Please try again')
-			})
-	}
+		try {
+			await props.player.nextSong(props.playerProperties.accessToken)
+		} catch (err) {
+			console.error(err)
+			alert('An error occurred while playing the next song')
+		}
+		const song = props.player.getCurrentSong()
+		setCurrentSong(song as spotify.Track)
+		setRemainingSongs(props.player.getAvailableSongNumber() - 1)
+		setPlaying(true)
+	}, [props, remainingSongs])
 
-	const toggleSong = () => {
-		props.player
-			.togglePlayback(props.playerProperties.accessToken)
-			.then(() => {
-				setPlaying(!playing)
-			})
-	}
+	const fetchSongs = React.useCallback(async () => {
+		try {
+			await props.player.fetchPlaylistTracks(
+				props.playlists,
+				props.playerProperties.accessToken,
+			)
+		} catch (err) {
+			alert(
+				'An error occurred while fetching playlist tracks, do you have access to all of them?',
+			)
+			props.controllerViewCallback()
+		}
+		playNextSong()
+	}, [props])
+
+	const toggleSong = React.useCallback(async () => {
+		await props.player.togglePlayback(props.playerProperties.accessToken)
+		setPlaying(!playing)
+	}, [props, playing])
 
 	const toggleShow = () => {
 		setShown(!shown)
 	}
 
 	React.useEffect(() => {
-		const fetchSongs = async () => {
-			try {
-				await props.player.fetchPlaylistTracks(
-					props.playlists,
-					props.playerProperties.accessToken,
-				)
-			} catch (err) {
-				alert(
-					'An error occurred while fetching playlist tracks, do you have access to all of them?',
-				)
-				props.controllerViewCallback()
-			}
-			playNextSong()
-		}
 		fetchSongs()
-	}, [props])
+	}, [props, fetchSongs])
 
 	return (
 		<>
