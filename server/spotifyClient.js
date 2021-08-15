@@ -86,10 +86,9 @@ class SpotifyClient {
 		}
 		axios(requestOptions)
 			.then((response) => {
-				console.log(response)
 				const responseData = {
 					access_token: response.data.access_token,
-					refresh_token: response.data.refresh_token,
+					refresh_token: refresh_token,
 				}
 				res.send(responseData)
 			})
