@@ -4,6 +4,7 @@ import Slider from 'react-input-slider'
 import EditPlaylistsButton from './buttons/EditPlaylistsButton'
 import NextButton from './buttons/NextButton'
 import PlayButton from './buttons/PlayButton'
+import RefreshTokenButton from './buttons/RefreshTokenButton'
 import ShowButton from './buttons/ShowButton'
 import Player from './Player'
 import { PlayerComponentProperties } from './PlayerComponent'
@@ -178,6 +179,11 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 					<div className="flex flex-row justify-center mt-2">
 						<EditPlaylistsButton
 							action={() => props.controllerViewCallback()}
+						/>
+						<RefreshTokenButton
+							action={() =>
+								(window.location.href = `/refresh_token?refresh_token=${props.playerProperties.refreshToken}`)
+							}
 						/>
 					</div>
 				</div>

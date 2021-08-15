@@ -24,6 +24,7 @@
 				"show": "Show song info",
 				"hide": "Hide song info",
 				"edit": "Edit playlists",
+				"refresh": "Refresh token",
 				"remaining": "Remaining songs:"
 			},
 			"title": "Music Quiz Player"

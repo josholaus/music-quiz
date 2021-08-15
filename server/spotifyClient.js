@@ -86,15 +86,18 @@ class SpotifyClient {
 		}
 		axios(requestOptions)
 			.then((response) => {
-				res.send({
-					access_token: access_token,
+				const responseData = qs.stringify({
+					access_token: response.access_token,
+					refresh_token: response.refresh_token,
 				})
+				res.redirect('/#' + responseData)
 			})
 			.catch((err) => {
-				res.send({
+				const responseData = qs.stringify({
 					error: err.response.error,
 					error_description: err.response.error_description,
 				})
+				res.redirect('/#' + responseData)
 			})
 	}
 }

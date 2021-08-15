@@ -24,6 +24,7 @@
 				"show": "Songinfo anzeigen",
 				"hide": "Songinfo verbergen",
 				"edit": "Playlists bearbeiten",
+				"refresh": "Token erneuern",
 				"remaining": "Verbleibende Songs:"
 			},
 			"title": "Music Quiz Player"
