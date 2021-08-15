@@ -68,12 +68,13 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 	const refreshToken = React.useCallback(async () => {
 		setRefreshing(true)
 		try {
-			await props.player.refreshToken()
+			await props.player.refreshToken(props.playerProperties.refreshToken)
+			setRefreshing(false)
 			alert('Successfully refreshed token')
 		} catch (err) {
+			setRefreshing(false)
 			alert('An error occurred while refreshing token')
 		}
-		setRefreshing(false)
 	}, [props])
 
 	const toggleShow = () => {
