@@ -293,7 +293,7 @@ class Player {
 
 	public async refreshToken(refreshToken: string): Promise<void> {
 		const res = await axios({
-			url: `/refresh_token?refresh_token?${refreshToken}`,
+			url: `/refresh_token?refresh_token=${refreshToken}`,
 			method: 'GET',
 		})
 		if (res.status >= 200 && res.status < 300) {
