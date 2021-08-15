@@ -8,6 +8,11 @@ declare global {
 	}
 }
 
+interface RefreshObject {
+	access_token: string
+	refresh_token: string
+}
+
 class Player {
 	/**
 	 * The Spotify Playback SDK instance
@@ -291,13 +296,17 @@ class Player {
 		}
 	}
 
-	public async refreshToken(refreshToken: string): Promise<void> {
+	public async refreshToken(refreshToken: string): Promise<RefreshObject> {
 		const res = await axios({
 			url: `/refresh_token?refresh_token=${refreshToken}`,
 			method: 'GET',
 		})
 		if (res.status >= 200 && res.status < 300) {
 			window.location.hash = `access_token=${res.data.access_token}&refresh_token=${res.data.refresh_token}`
+			return {
+				access_token: res.data.access_token,
+				refresh_token: res.data.refresh_token,
+			}
 		} else {
 			throw new Error(
 				`Could not refresh token (code ${res.status}): ${res.data}`,

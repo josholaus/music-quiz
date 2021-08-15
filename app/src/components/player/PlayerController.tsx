@@ -68,7 +68,11 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 	const refreshToken = React.useCallback(async () => {
 		setRefreshing(true)
 		try {
-			await props.player.refreshToken(props.playerProperties.refreshToken)
+			const data = await props.player.refreshToken(
+				props.playerProperties.refreshToken,
+			)
+			props.playerProperties.accessToken = data.access_token
+			props.playerProperties.refreshToken = data.refresh_token
 			setRefreshing(false)
 			alert('Successfully refreshed token')
 		} catch (err) {
