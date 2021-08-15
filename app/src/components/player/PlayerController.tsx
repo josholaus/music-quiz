@@ -20,6 +20,7 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 	const [currentSong, setCurrentSong] = React.useState({} as spotify.Track)
 	const [playing, setPlaying] = React.useState(false)
 	const [shown, setShown] = React.useState(false)
+	const [refreshing, setRefreshing] = React.useState(false)
 	const [volume, setVolume] = React.useState(25)
 	const [remainingSongs, setRemainingSongs] = React.useState(-1)
 
@@ -63,6 +64,17 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 		await props.player.togglePlayback(props.playerProperties.accessToken)
 		setPlaying(!playing)
 	}, [props, playing])
+
+	const refreshToken = React.useCallback(async () => {
+		setRefreshing(true)
+		try {
+			await props.player.refreshToken()
+			alert('Successfully refreshed token')
+		} catch (err) {
+			alert('An error occurred while refreshing token')
+		}
+		setRefreshing(false)
+	}, [props])
 
 	const toggleShow = () => {
 		setShown(!shown)
@@ -181,9 +193,8 @@ export default function PlaylistController(props: PlayerControllerProperties) {
 							action={() => props.controllerViewCallback()}
 						/>
 						<RefreshTokenButton
-							action={() =>
-								(window.location.href = `/refresh_token?refresh_token=${props.playerProperties.refreshToken}`)
-							}
+							action={refreshToken}
+							className={refreshing ? 'animate-spin' : ''}
 						/>
 					</div>
 				</div>

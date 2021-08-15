@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 interface RefreshTokenButtonProperties {
 	action: () => void
+	className?: string
 }
 
 export default function RefreshTokenButton(
@@ -22,7 +23,7 @@ export default function RefreshTokenButton(
 			title={t('pages.player.controller.refresh')}>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				className="h-5 w-5"
+				className={`h-5 w-5 ${props.className}`}
 				viewBox="0 0 20 20"
 				fill="currentColor">
 				<path

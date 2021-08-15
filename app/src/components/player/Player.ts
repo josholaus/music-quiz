@@ -290,6 +290,20 @@ class Player {
 			return
 		}
 	}
+
+	public async refreshToken(): Promise<void> {
+		const res = await axios({
+			url: `/refresh_token?refresh_token?${this.refreshToken}`,
+			method: 'GET',
+		})
+		if (res.status >= 200 && res.status < 300) {
+			window.location.hash = `access_token=${res.data.access_token}&refresh_token=${res.data.refresh_token}`
+		} else {
+			throw new Error(
+				`Could not refresh token (code ${res.status}): ${res.data}`,
+			)
+		}
+	}
 }
 
 export default Player
