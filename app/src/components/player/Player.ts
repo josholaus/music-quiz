@@ -35,9 +35,9 @@ class Player {
 	 */
 	private storedTracks: spotify.Track[] = []
 	/**
-	 * Value of recent volume change in order to limit API requests
+	 * Value of recent volume change request in order to limit API requests
 	 */
-	private recentVolume: number = 0
+	private recentVolumeRequest?: NodeJS.Timeout
 	/**
 	 * Determines whether this player instance is ready to operate
 	 */
@@ -289,11 +289,12 @@ class Player {
 		if (value < 0 || value > 100) {
 			throw new Error('Invalid volume value!')
 		}
-		if (Math.abs(value - this.recentVolume) >= 10) {
-			await this.setPlaybackVolume(value, accessToken)
-			this.recentVolume = value
-			return
+		if (this.recentVolumeRequest) {
+			clearTimeout(this.recentVolumeRequest)
 		}
+		this.recentVolumeRequest = setTimeout(async () => {
+			await this.setPlaybackVolume(value, accessToken)
+		}, 500)
 	}
 
 	public async refreshToken(refreshToken: string): Promise<RefreshObject> {
