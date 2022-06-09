@@ -34,6 +34,7 @@ class SpotifyClient {
 			})
 		res.redirect(url)
 	}
+
 	handleCallback(req, res) {
 		const code = req.query.code || null
 		const data = qs.stringify({
@@ -57,14 +58,22 @@ class SpotifyClient {
 					access_token: response.data.access_token,
 					refresh_token: response.data.refresh_token,
 				})
-				res.redirect('/#' + responseData)
+				if (process.env.DEBUG) {
+					res.redirect('http://127.0.0.1:3000/?' + responseData)
+				} else {
+					res.redirect('/?' + responseData)
+				}
 			})
 			.catch((err) => {
 				const responseData = qs.stringify({
 					error: err.response.error,
 					error_description: err.response.error_description,
 				})
-				res.redirect('/#' + responseData)
+				if (process.env.DEBUG) {
+					res.redirect('http://127.0.0.1:3000/?' + responseData)
+				} else {
+					res.redirect('/?' + responseData)
+				}
 			})
 	}
 

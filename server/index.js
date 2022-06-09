@@ -1,6 +1,7 @@
 const dotenv = require('dotenv')
 const log4js = require('log4js')
 const express = require('express')
+const cors = require('cors')
 const path = require('path')
 const minimist = require('minimist')
 const spotifyClient = require('./spotifyClient')
@@ -52,6 +53,7 @@ function configureMiddleware(server, logger) {
 
 function configureRoutes(server) {
 	const client = new spotifyClient()
+	server.use(cors())
 	server.get('/', (req, res) => {
 		res.sendFile(path.join(__dirname, '../app/build', 'index.html'))
 	})

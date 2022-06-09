@@ -2,9 +2,11 @@
 	<Head>
 		<Title>Music Quiz - Home</Title>
 	</Head>
-	<div class="text-center py-20 h-full">
-		<HomePlayer v-if="player" />
-		<HomePlaylistInput v-else @tracksReceived="updatePlayer" />
+	<div>
+		<div class="text-center py-20 h-full">
+			<HomePlayer v-if="player" />
+			<HomePlaylistInput v-else @tracksReceived="updatePlayer" />
+		</div>
 	</div>
 </template>
 
