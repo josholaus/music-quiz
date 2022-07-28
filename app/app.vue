@@ -24,6 +24,11 @@
 export default {
 	head() {
 		return {
+			script: [
+				{
+					src: "https://sdk.scdn.co/spotify-player.js"
+				}
+			],
 			meta: [
 				{
 					name: 'description',
