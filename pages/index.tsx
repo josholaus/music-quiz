@@ -18,7 +18,7 @@ const Home: NextPage = () => (
                 Hey there! As of now, this app is in <span className="font-bold">closed beta mode</span>.
             </FlowText>
             <FlowText className="text-lg">
-                If you have already been invited by either Nico or Josh, <br /> click the button below and login with
+                If you have already been invited by either Nico or Josh, click the button below and login with
                 your Spotify account!
             </FlowText>
             <Quote className="mt-5" author="Rick Sanchez">
