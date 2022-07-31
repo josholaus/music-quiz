@@ -6,7 +6,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         res.status(405).end()
         return
     }
-    const spotifyURL = spotify.getLoginURL()
+    const spotifyURL = spotify.getLoginURL(req, res)
     res.redirect(spotifyURL)
 }
 

@@ -4,6 +4,8 @@ import React, { useCallback } from 'react'
 
 import { Title } from '@components/headings'
 import { WebPlaybackSDK } from 'react-spotify-web-playback-sdk'
+import nookies from 'nookies'
+import PlayerComponent from '@components/player/PlayerComponent'
 
 type PlayerProps = {
     access_token: string
@@ -22,46 +24,52 @@ const Player: NextPage<PlayerProps> = ({ access_token }) => {
             </Head>
             <Title>Player</Title>
             <WebPlaybackSDK
-                initialDeviceName="Spotify Player on Next.js"
+                initialDeviceName='Josholaus Music Quiz'
                 getOAuthToken={getOAuthToken}
                 connectOnInitialized={true}
                 initialVolume={0.5}>
-                <div></div>
+                <div>
+                    <PlayerComponent />
+                </div>
             </WebPlaybackSDK>
         </>
     )
 }
 
-export const getServerSideProps: GetServerSideProps<PlayerProps> = async ({ query }) => {
-    if (!query.access_token) {
-        return {
-            redirect: {
-                destination: '/',
-                permanent: false,
-            },
-        }
-    }
-    if (query.refresh_token) {
-        const res = await fetch(`/api/refresh_token?refresh_token=${query.refresh_token}`)
+export const getServerSideProps: GetServerSideProps<PlayerProps> = async ({ query, req }) => {
+    const stateFromCookies = nookies.get({ req }).state
+    const stateFromRequest = query.state
+    if (
+        typeof stateFromRequest === 'string' &&
+        stateFromCookies === stateFromRequest &&
+        typeof query.code === 'string'
+    ) {
+        const body = new URLSearchParams({
+            grant_type: 'authorization_code',
+            code: query.code,
+            redirect_uri: process.env.REDIRECT_URI ?? '',
+            client_id: process.env.CLIENT_ID ?? '',
+            client_secret: process.env.CLIENT_SECRET ?? '',
+        })
+        const res = await fetch(`https://accounts.spotify.com/api/token`, {
+            method: 'POST',
+            body,
+        })
         if (res.ok) {
-            const json = await res.json()
-            return {
-                props: {
-                    access_token: json.access_token,
-                },
-            }
-        } else {
-            return {
-                redirect: {
-                    destination: '/',
-                    permanent: false,
-                },
+            const resJson = await res.json()
+            if (resJson.access_token) {
+                return {
+                    props: {
+                        access_token: resJson.access_token,
+                    },
+                }
             }
         }
     }
     return {
-        props: {
-            access_token: query.access_token,
+        redirect: {
+            destination: '/',
+            permanent: false,
         },
     }
 }
