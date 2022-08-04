@@ -1,1 +1,2 @@
-export { LoadingComponent } from './LoadingComponent'
+export { PlaylistInput } from './PlaylistInput'
+export { WebPlaybackSDK } from './WebPlaybackSDK'

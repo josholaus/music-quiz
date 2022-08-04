@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import spotify from '@lib/spotify'
-import qs from 'qs'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method != 'GET') {
@@ -10,9 +9,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const spotifyResponse = await spotify.handleCallback(req)
     if (spotifyResponse.ok) {
         const { access_token, refresh_token }: SpotifyTokenResponse = await spotifyResponse.json()
-        res.redirect(`/player?${qs.stringify({ access_token, refresh_token })}`)
+        res.redirect(`/player?${new URLSearchParams({ access_token, refresh_token }).toString()}`)
     } else {
-        res.redirect(`/player?${qs.stringify({ error: spotifyResponse.status })}`)
+        res.redirect(`/player?${new URLSearchParams({ error: spotifyResponse.status.toString() }).toString()}`)
     }
 }
 

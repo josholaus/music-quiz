@@ -1,7 +1,6 @@
-import qs from 'qs'
 import { NextApiRequest } from 'next'
 
-class SpotifyClient {
+class Spotify {
     private scopes = [
         'playlist-read-private',
         'streaming',
@@ -22,28 +21,28 @@ class SpotifyClient {
     }
 
     public getLoginURL(): string {
-        return `https://accounts.spotify.com/authorize?${qs.stringify({
+        return `https://accounts.spotify.com/authorize?${new URLSearchParams({
             response_type: 'code',
             client_id: this.clientId,
             scope: this.scopes,
             redirect_uri: this.redirectUri,
-        })}`
+        }).toString()}`
     }
 
     public async handleCallback(req: NextApiRequest): Promise<Response> {
-        const body = qs.stringify({
+        const body = new URLSearchParams({
             grant_type: 'authorization_code',
-            code: req.query.code,
+            code: req.query.code?.toString() ?? '',
             redirect_uri: this.redirectUri,
-        })
+        }).toString()
         return this.sendTokenRequest(body)
     }
 
     public async handleRefresh(req: NextApiRequest): Promise<Response> {
-        const body = qs.stringify({
+        const body = new URLSearchParams({
             grant_type: 'refresh_token',
-            refresh_token: req.query.refresh_token,
-        })
+            refresh_token: req.query.refresh_token?.toString() ?? '',
+        }).toString()
         return this.sendTokenRequest(body)
     }
 
@@ -60,7 +59,7 @@ class SpotifyClient {
     }
 }
 
-export default new SpotifyClient(
+export default new Spotify(
     process.env.CLIENT_ID ?? '',
     process.env.CLIENT_SECRET ?? '',
     process.env.REDIRECT_URI ?? '',

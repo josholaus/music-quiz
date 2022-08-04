@@ -28,3 +28,5 @@ const PlaylistInput = (props: PlaylistInputProps) => {
         </>
     )
 }
+
+export { PlaylistInput }
