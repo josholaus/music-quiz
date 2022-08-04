@@ -1,7 +1,5 @@
 import qs from 'qs'
-import { NextApiRequest, NextApiResponse } from 'next'
-import { setCookie } from 'nookies'
-import generateRandomString from '@lib/util'
+import { NextApiRequest } from 'next'
 
 class SpotifyClient {
     private scopes = [
@@ -23,21 +21,42 @@ class SpotifyClient {
         }
     }
 
-    public getLoginURL(req: NextApiRequest, res: NextApiResponse): string {
-        const state = generateRandomString(16)
-        setCookie({ res }, "state", state, {
-            maxAge: 3600000,
-            secure: !req.headers.host?.includes("localhost"),
-            httpOnly: true,
-            path: "/",
-        });
+    public getLoginURL(): string {
         return `https://accounts.spotify.com/authorize?${qs.stringify({
             response_type: 'code',
             client_id: this.clientId,
-            scope: encodeURIComponent(this.scopes),
+            scope: this.scopes,
             redirect_uri: this.redirectUri,
-            state
         })}`
+    }
+
+    public async handleCallback(req: NextApiRequest): Promise<Response> {
+        const body = qs.stringify({
+            grant_type: 'authorization_code',
+            code: req.query.code,
+            redirect_uri: this.redirectUri,
+        })
+        return this.sendTokenRequest(body)
+    }
+
+    public async handleRefresh(req: NextApiRequest): Promise<Response> {
+        const body = qs.stringify({
+            grant_type: 'refresh_token',
+            refresh_token: req.query.refresh_token,
+        })
+        return this.sendTokenRequest(body)
+    }
+
+    private async sendTokenRequest(body: string): Promise<Response> {
+        this.headers = {
+            ...this.headers,
+            'Content-Length': body.length.toString(),
+        }
+        return fetch('https://accounts.spotify.com/api/token', {
+            method: 'post',
+            headers: this.headers,
+            body,
+        })
     }
 }
 
