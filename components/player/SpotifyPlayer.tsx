@@ -1,6 +1,9 @@
+import { useGlobalContext } from '@components/context'
 import { LoadingComponent } from '@components/misc'
 import { useEffect, useState } from 'react'
+import PlayerError from './PlayerError'
 import PlayerParent from './PlayerParent'
+import PlayerTransferred from './PlayerTransferred'
 
 interface Props {
     initialAccessToken: string
@@ -19,6 +22,16 @@ export function SpotifyPlayer({ initialAccessToken, initialRefreshToken }: Props
     const [playerState, setPlayerState] = useState<Spotify.PlaybackState | null>(null)
     const [deviceId, setDeviceId] = useState<string | null>(null)
 
+    const {
+        currentTrack,
+        setCurrentTrack,
+        setRevealed,
+    }: {
+        currentTrack: Spotify.Track | null
+        setCurrentTrack: (track: Spotify.Track | null) => void
+        setRevealed: (revealed: boolean) => void
+    } = useGlobalContext()
+
     useEffect(() => {
         const scriptTag = document.createElement('script')
         scriptTag.src = 'https://sdk.scdn.co/spotify-player.js'
@@ -31,23 +44,9 @@ export function SpotifyPlayer({ initialAccessToken, initialRefreshToken }: Props
             }
             init = true
             console.log('Initializing Spotify Web Playback SDK...')
-            let firstTime = true
-            const playerObject = new window.Spotify.Player({
+            const playerObject = new Spotify.Player({
                 name: 'Josholaus',
                 getOAuthToken: async (cb: (token: string) => void) => {
-                    if (!firstTime) {
-                        console.log('Refreshing token...')
-                        const params = new URLSearchParams({ refresh_token: refreshToken }).toString()
-                        const res = await fetch(`/api/refresh_token?${params}`, {
-                            method: 'GET',
-                        })
-                        const { access_token, refresh_token } = await res.json()
-                        setAccessToken(access_token)
-                        setRefreshToken(refresh_token)
-                        cb(access_token)
-                        return
-                    }
-                    firstTime = false
                     cb(accessToken)
                 },
                 volume: 0.5,
@@ -66,8 +65,16 @@ export function SpotifyPlayer({ initialAccessToken, initialRefreshToken }: Props
             playerObject.addListener('player_state_changed', (state) => {
                 console.log('Player State Changed', state)
                 setPlayerState(state)
+                if (state) {
+                    if (currentTrack != state.track_window.current_track) {
+                        setRevealed(false)
+                    }
+                    setCurrentTrack(state.track_window.current_track)
+                    setActive(state.context.uri != null)
+                } else {
+                    setActive(false)
+                }
                 setError(null)
-                setActive(!(!state || !state.context.uri))
             })
             playerObject.addListener('playback_error', (error) => {
                 console.log('Playback Error', error)
@@ -84,23 +91,13 @@ export function SpotifyPlayer({ initialAccessToken, initialRefreshToken }: Props
     }
 
     if (error) {
-        // TODO: Better error component
-        return (
-            <div>
-                <p>An error occurred:</p>
-                <p>{error.message}</p>
-            </div>
-        )
+        return <PlayerError error={error} />
     }
 
     if (!active || !playerState) {
         // TODO: Better playback transferred component
-        return (
-            <div>
-                <p>Playback transferred</p>
-            </div>
-        )
+        return <PlayerTransferred />
     }
 
-    return (<PlayerParent player={player} playerState={playerState} deviceId={deviceId} />)
+    return <PlayerParent player={player} playerState={playerState} deviceId={deviceId} />
 }

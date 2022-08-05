@@ -2,6 +2,8 @@ import { NextPage } from 'next'
 import Head from 'next/head'
 
 import { SpotifyPlayer } from '@components/player/SpotifyPlayer'
+import { useEffect, useState } from 'react'
+import { Title } from '@components/headings'
 
 interface PlayerProps {
     access_token?: string
@@ -9,26 +11,35 @@ interface PlayerProps {
 }
 
 const Player: NextPage = ({ access_token, refresh_token }: PlayerProps) => {
-    if (!access_token || !refresh_token) {
+    const [accessToken, setAccessToken] = useState(access_token)
+    const [refreshToken, setRefreshToken] = useState(refresh_token)
+
+    useEffect(() => {
+        if (!refreshToken) {
+            console.error('Did not receive refresh token, cannot refresh')
+            return
+        }
+        setInterval(async () => {
+            const params = new URLSearchParams({
+                refreshToken,
+            })
+            const { access_token, refresh_token } = await fetch(`/api/refresh_token?${params.toString()}`).then((res) =>
+                res.json(),
+            )
+            setAccessToken(access_token)
+            setRefreshToken(refresh_token)
+        }, 3600 * 1000)
+    })
+
+    if (!accessToken || !refreshToken) {
         return (
-            <>
-                <Head>
-                    <title>Error</title>
-                </Head>
-                <div>
-                    <p>Your login is invalid</p>
-                </div>
-            </>
+            <div>
+                <Title>An error occurred</Title>
+                <p>Your login is invalid</p>
+            </div>
         )
     }
-    return (
-        <>
-            <Head>
-                <title>Josholaus Music Quiz</title>
-            </Head>
-            <SpotifyPlayer initialAccessToken={access_token.toString()} initialRefreshToken={refresh_token.toString()} />
-        </>
-    )
+    return <SpotifyPlayer initialAccessToken={accessToken.toString()} initialRefreshToken={refreshToken.toString()} />
 }
 
 Player.getInitialProps = ({ query }: any) => {

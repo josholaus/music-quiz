@@ -1,4 +1,3 @@
-import Player from '@pages/player'
 import React from 'react'
 import PlayerController from './PlayerController'
 import PlayerCover from './PlayerCover'
@@ -20,7 +19,7 @@ export default function PlayerParent(props: PlayerParentProps) {
                     <PlayerController player={props.player} playerState={props.playerState} deviceId={props.deviceId} />
                     <PlayerProgress playerState={props.playerState} player={props.player} />
                 </div>
-                <PlayerCover currentTrack={props.playerState.track_window.current_track} revealed={true} />
+                <PlayerCover currentTrack={props.playerState.track_window.current_track} />
             </div>
         </div>
     )

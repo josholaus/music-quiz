@@ -1,3 +1,4 @@
+import { useGlobalContext } from '@components/context'
 import React, { useEffect, useState } from 'react'
 
 interface PlayerProgressProps {
@@ -11,18 +12,18 @@ function pad(num: number, places: number): string {
 
 export default function PlayerProgress(props: PlayerProgressProps) {
     const [playerState, setPlayerState] = useState(props.playerState)
-    const [time, setTime] = useState(props.playerState.position / 1000)
-    const [maxTime, setMaxTime] = useState(props.playerState.duration / 1000)
+    const [time, setTime] = useState(Math.floor(props.playerState.position / 1000))
+    const [maxTime, setMaxTime] = useState(Math.floor(props.playerState.duration / 1000))
 
     useEffect(() => {
         setInterval(async () => {
             const state = await props.player.getCurrentState()
             if (state) {
                 setPlayerState(state)
-                setTime(Math.round(state.position / 1000))
-                setMaxTime(Math.round(state.duration / 1000))
+                setTime(Math.floor(state.position / 1000))
+                setMaxTime(Math.floor(state.duration / 1000))
             }
-        }, 1000)
+        }, 500)
     }, [])
 
     const remainingTime = () => {
@@ -39,7 +40,7 @@ export default function PlayerProgress(props: PlayerProgressProps) {
 
     return (
         <div className="flex flex-row m-3 items-center">
-            <p className="px-3 font-mono">{timeString()}</p>
+            <p className="px-3 custom-mono">{timeString()}</p>
             <div className="flex flex-start bg-blue-grey-50 w-full h-1.5 rounded-full bg-slate-200/40">
                 <div
                     className="h-full bg-black rounded-full"
@@ -47,7 +48,7 @@ export default function PlayerProgress(props: PlayerProgressProps) {
                         width: `${Math.floor((time / maxTime) * 100)}%`,
                     }}></div>
             </div>
-            <p className="px-3 font-mono">-{remainingTimeString()}</p>
+            <p className="px-3 custom-mono">-{remainingTimeString()}</p>
         </div>
     )
 }

@@ -8,10 +8,8 @@ interface QuoteProps {
 
 const Quote = (props: QuoteProps) => (
     <div className={`${props.className} text-slate-600`}>
-        <p className="italic">
-            {'>'} &quot;{props.children}
-        </p>
-        <p>~ {props.author}</p>
+        <p className="italic">{props.children}</p>
+        <p>— {props.author}</p>
     </div>
 )
 

@@ -59,8 +59,4 @@ class Spotify {
     }
 }
 
-export default new Spotify(
-    process.env.CLIENT_ID ?? '',
-    process.env.CLIENT_SECRET ?? '',
-    process.env.REDIRECT_URI ?? '',
-)
+export default new Spotify(process.env.CLIENT_ID ?? '', process.env.CLIENT_SECRET ?? '', process.env.REDIRECT_URI ?? '')
