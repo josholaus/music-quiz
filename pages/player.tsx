@@ -1,7 +1,7 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
 
-import { WebPlaybackSDK } from '@components/player'
+import { SpotifyPlayer } from '@components/player/SpotifyPlayer'
 
 interface PlayerProps {
     access_token?: string
@@ -11,9 +11,14 @@ interface PlayerProps {
 const Player: NextPage = ({ access_token, refresh_token }: PlayerProps) => {
     if (!access_token || !refresh_token) {
         return (
-            <div>
-                <p>Your login is invalid</p>
-            </div>
+            <>
+                <Head>
+                    <title>Error</title>
+                </Head>
+                <div>
+                    <p>Your login is invalid</p>
+                </div>
+            </>
         )
     }
     return (
@@ -21,7 +26,7 @@ const Player: NextPage = ({ access_token, refresh_token }: PlayerProps) => {
             <Head>
                 <title>Josholaus Music Quiz</title>
             </Head>
-            <WebPlaybackSDK accessToken={access_token.toString()} refreshToken={refresh_token.toString()} />
+            <SpotifyPlayer initialAccessToken={access_token.toString()} initialRefreshToken={refresh_token.toString()} />
         </>
     )
 }

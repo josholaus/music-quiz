@@ -1,2 +1,6 @@
 export { PlaylistInput } from './PlaylistInput'
-export { WebPlaybackSDK } from './WebPlaybackSDK'
+export { default as PlayerParent } from './PlayerParent'
+export { default as PlayerCover } from './PlayerCover'
+export { default as PlayerController } from './PlayerController'
+export { default as PlayerStateConsumer } from './PlayerStateConsumer'
+export { default as PlayerProgress } from './PlayerProgress'
