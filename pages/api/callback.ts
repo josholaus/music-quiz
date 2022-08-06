@@ -1,5 +1,5 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
 import spotify from '@lib/spotify'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method != 'GET') {

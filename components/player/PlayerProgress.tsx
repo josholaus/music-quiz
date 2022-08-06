@@ -1,5 +1,4 @@
-import { useGlobalContext } from '@components/context'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface PlayerProgressProps {
     playerState: Spotify.PlaybackState

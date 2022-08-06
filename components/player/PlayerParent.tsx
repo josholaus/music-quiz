@@ -1,5 +1,4 @@
 import SpotifyClient from '@lib/spotifyClient'
-import React from 'react'
 import PlayerController from './PlayerController'
 import PlayerCover from './PlayerCover'
 import PlayerMetadata from './PlayerMetadata'

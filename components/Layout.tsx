@@ -1,6 +1,5 @@
 import React from 'react'
 import { useGlobalContext } from './context'
-import Image from 'next/image'
 
 const Layout = (props: { children: React.ReactNode }) => {
     const {

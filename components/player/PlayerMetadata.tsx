@@ -1,5 +1,4 @@
 import { useGlobalContext } from '@components/context'
-import React from 'react'
 
 interface PlayerMetadataProps {
     currentTrack: Spotify.Track

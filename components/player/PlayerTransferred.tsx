@@ -1,5 +1,4 @@
 import { Title } from '@components/headings'
-import React from 'react'
 
 export default function PlayerTransferred() {
     return (

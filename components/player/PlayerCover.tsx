@@ -1,6 +1,4 @@
 import { useGlobalContext } from '@components/context'
-import React from 'react'
-import Image from 'next/image'
 
 interface PlayerCoverProps {
     currentTrack: Spotify.Track

@@ -1,8 +1,8 @@
 import type { NextPage } from 'next'
 
+import { SpotifyButton } from '@components/buttons'
 import { MegaTitle } from '@components/headings'
 import { Quote } from '@components/text'
-import { SpotifyButton } from '@components/buttons'
 
 const Home: NextPage = () => (
     <>

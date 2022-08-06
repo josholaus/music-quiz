@@ -1,5 +1,3 @@
-import React from 'react'
-
 const Footer = () => (
     <span className="text-gray-500 mt-5 block text-xs">
         &#169; {new Date().getFullYear()}{' '}

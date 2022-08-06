@@ -1,5 +1,3 @@
-import React from 'react'
-
 const SpotifyButton = (props: any) => (
     <a
         href={'/api/login'}

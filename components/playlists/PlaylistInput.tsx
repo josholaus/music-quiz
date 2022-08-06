@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { Title } from '@components/headings'
 import { GeneralButton } from '@components/buttons'
-import SpotifyClient from '@lib/spotifyClient'
+import { Title } from '@components/headings'
 import { LoadingComponent } from '@components/misc'
+import SpotifyClient from '@lib/spotifyClient'
 
 interface PlaylistInputProps {
     setSpotifyTracks: (tracks: SpotifyApi.TrackObjectFull[]) => void

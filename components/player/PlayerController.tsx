@@ -1,7 +1,6 @@
 import { DEFAULT_OFFSET_MS } from '@lib/constants'
 import SpotifyClient from '@lib/spotifyClient'
 import { useRouter } from 'next/router'
-import React from 'react'
 
 interface PlayerControllerProps {
     player: Spotify.Player

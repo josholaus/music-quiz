@@ -1,11 +1,10 @@
 import { NextPage } from 'next'
-import Head from 'next/head'
 
-import { SpotifyPlayer } from '@components/player/SpotifyPlayer'
-import { useEffect, useState } from 'react'
 import { Title } from '@components/headings'
+import { SpotifyPlayer } from '@components/player/SpotifyPlayer'
 import { PlaylistInput } from '@components/playlists'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 
 interface PlayerProps {
     access_token?: string
@@ -28,7 +27,7 @@ const Player: NextPage = ({ access_token, refresh_token }: PlayerProps) => {
             const params = new URLSearchParams({
                 refreshToken,
             })
-            const {access_token, refresh_token} = await fetch(`/api/refresh_token?${params.toString()}`).then((res) =>
+            const { access_token, refresh_token } = await fetch(`/api/refresh_token?${params.toString()}`).then((res) =>
                 res.json(),
             )
             setAccessToken(access_token)
@@ -46,8 +45,8 @@ const Player: NextPage = ({ access_token, refresh_token }: PlayerProps) => {
         router.replace({
             pathname,
             query: {
-                ...query
-            }
+                ...query,
+            },
         })
     }, [accessToken])
 

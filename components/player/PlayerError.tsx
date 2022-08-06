@@ -1,5 +1,4 @@
 import { Title } from '@components/headings'
-import React from 'react'
 
 interface PlayerErrorProps {
     error?: Spotify.Error | null
