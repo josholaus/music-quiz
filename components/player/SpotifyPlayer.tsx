@@ -13,7 +13,7 @@ interface SpotifyPlayerProps {
     spotifyTracks: SpotifyApi.TrackObjectFull[]
 }
 
-// The spotify-web-playback-sdk are out of date (haven't been updated in 1 year+) ... there are new functions
+// The spotify-web-playback-sdk typings are out of date (haven't been updated in 1 year+) ... there are new functions
 type SpotifyOutOfBetaPolyfill = {
     activateElement: () => void
 }
