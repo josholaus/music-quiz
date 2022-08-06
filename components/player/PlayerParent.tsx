@@ -19,7 +19,13 @@ export default function PlayerParent(props: PlayerParentProps) {
             <div className="background flex flex-col-reverse sm:flex-row  items-center justify-center">
                 <div id="left" className="flex flex-col w-80 m-5">
                     <PlayerMetadata currentTrack={props.playerState.track_window.current_track} />
-                    <PlayerController player={props.player} playerState={props.playerState} deviceId={props.deviceId} spotifyTracks={props.spotifyTracks} spotifyClient={props.spotifyClient} />
+                    <PlayerController
+                        player={props.player}
+                        playerState={props.playerState}
+                        deviceId={props.deviceId}
+                        spotifyTracks={props.spotifyTracks}
+                        spotifyClient={props.spotifyClient}
+                    />
                     <PlayerProgress playerState={props.playerState} player={props.player} />
                     <p className="text-xs">songs left: {props.spotifyTracks.length}</p>
                 </div>
