@@ -13,8 +13,13 @@ interface SpotifyPlayerProps {
     spotifyTracks: SpotifyApi.TrackObjectFull[]
 }
 
+// The spotify-web-playback-sdk are out of date (haven't been updated in 1 year+) ... there are new functions
+type SpotifyOutOfBetaPolyfill = {
+    activateElement: () => void
+}
+
 export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps) {
-    const [player, setPlayer] = useState<Spotify.Player | null>(null)
+    const [player, setPlayer] = useState<Spotify.Player & SpotifyOutOfBetaPolyfill | null>(null)
 
     const [ready, setReady] = useState<boolean>(false)
     const [active, setActive] = useState<boolean>(false)
@@ -54,7 +59,7 @@ export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps
                     cb(accessToken)
                 },
                 volume: 0.5,
-            })
+            }) as Spotify.Player & SpotifyOutOfBetaPolyfill
             setPlayer(playerObject)
             playerObject.addListener('ready', ({ device_id }) => {
                 console.log('Ready with Device ID', device_id)
