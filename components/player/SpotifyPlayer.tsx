@@ -116,6 +116,9 @@ export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps
                     onClick={() => {
                         if (player) {
                             player.activateElement()
+                            if (deviceId) {
+                                spotifyClient.playRandomTrack(spotifyTracks, deviceId, DEFAULT_OFFSET_MS)
+                            }
                             setRestricted(false)
                         }
                     }}>
