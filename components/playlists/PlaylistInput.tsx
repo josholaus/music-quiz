@@ -17,7 +17,6 @@ export default function PlaylistInput(props: PlaylistInputProps) {
 
     useEffect(() => {
         if (value === '') {
-            console.log("XD")
             const storage = localStorage.getItem('playlist-input')
             if (storage) {
                 setValue(storage)
