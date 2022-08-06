@@ -25,7 +25,7 @@ export default function PlayerCover(props: PlayerCoverProps) {
 
     return (
         <div
-            className={`w-44 mx-8 ${revealed ? '' : 'cursor-pointer'}`}
+            className={`w-72 sm:w-44 mx-8 ${revealed ? '' : 'cursor-pointer'}`}
             title={revealed ? '' : 'Click to reveal'}
             onClick={() => clickCover()}>
             <img className="rounded-md shadow-md" src={revealed ? coverUrl : questionUrl} />
