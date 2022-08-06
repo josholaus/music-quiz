@@ -41,7 +41,7 @@ class Spotify {
     public async handleRefresh(req: NextApiRequest): Promise<Response> {
         const body = new URLSearchParams({
             grant_type: 'refresh_token',
-            refresh_token: req.query.refresh_token?.toString() ?? '',
+            refresh_token: req.query.refreshToken?.toString() ?? '',
         }).toString()
         return this.sendTokenRequest(body)
     }

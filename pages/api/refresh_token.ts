@@ -9,7 +9,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const spotifyResponse = await spotify.handleRefresh(req)
     if (spotifyResponse.ok) {
         const { access_token }: SpotifyTokenResponse = await spotifyResponse.json()
-        res.send({ access_token, refresh_token: req.query.refresh_token })
+        res.send({ access_token, refresh_token: req.query.refreshToken })
     } else {
         res.send({ error: spotifyResponse.status })
     }
