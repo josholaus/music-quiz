@@ -1,3 +1,4 @@
+import { GeneralButton } from '@components/buttons'
 import { useGlobalContext } from '@components/context'
 import { LoadingComponent } from '@components/misc'
 import { DEFAULT_OFFSET_MS } from '@lib/constants'
@@ -21,6 +22,7 @@ export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps
 
     const [playerState, setPlayerState] = useState<Spotify.PlaybackState | null>(null)
     const [deviceId, setDeviceId] = useState<string | null>(null)
+    const [restricted, setRestricted] = useState<boolean>(false)
 
     const spotifyClient = new SpotifyClient(accessToken)
 
@@ -89,6 +91,10 @@ export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps
                 console.log('Playback Error', error)
                 setError(error)
             })
+            playerObject.addListener('autoplay_failed', () => {
+                console.log('Autoplay is not allowed by the browser autoplay rules')
+                setRestricted(true)
+            })
             playerObject.connect().then((connected) => {
                 console.log(connected ? 'Successfully connected to Spotify' : 'Failed to connect to Spotify')
             })
@@ -97,6 +103,22 @@ export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps
             document.body.removeChild(scriptTag)
         }
     }, [])
+
+    if (restricted) {
+        return (
+            <div>
+                <GeneralButton
+                    onClick={() => {
+                        if (player) {
+                            player.activateElement()
+                            setRestricted(false)
+                        }
+                    }}>
+                    Connect
+                </GeneralButton>
+            </div>
+        )
+    }
 
     if (!ready || !player || !playerState) {
         return <LoadingComponent />
