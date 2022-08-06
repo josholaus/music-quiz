@@ -1,3 +1,3 @@
-const DEFAULT_OFFSET_MS = 30 * 1000
+const DEFAULT_OFFSET_S = 30
 
-export { DEFAULT_OFFSET_MS }
+export { DEFAULT_OFFSET_S }

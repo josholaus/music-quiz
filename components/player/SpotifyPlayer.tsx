@@ -1,7 +1,6 @@
 import { GeneralButton } from '@components/buttons'
 import { useGlobalContext } from '@components/context'
 import { LoadingComponent } from '@components/misc'
-import { DEFAULT_OFFSET_MS } from '@lib/constants'
 import SpotifyClient from '@lib/spotifyClient'
 import { useEffect, useState } from 'react'
 import PlayerError from './PlayerError'
@@ -35,10 +34,12 @@ export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps
         currentTrack,
         setCurrentTrack,
         setRevealed,
+        startTime,
     }: {
         currentTrack: Spotify.Track | null
         setCurrentTrack: (track: Spotify.Track | null) => void
-        setRevealed: (revealed: boolean) => void
+        setRevealed: (revealed: boolean) => void,
+        startTime: number
     } = useGlobalContext()
 
     useEffect(() => {
@@ -64,7 +65,7 @@ export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps
             playerObject.addListener('ready', ({ device_id }) => {
                 console.log('Ready with Device ID', device_id)
                 setDeviceId(device_id)
-                spotifyClient.playRandomTrack(spotifyTracks, device_id, DEFAULT_OFFSET_MS)
+                spotifyClient.playRandomTrack(spotifyTracks, device_id, startTime)
                 setReady(true)
             })
             playerObject.addListener('not_ready', ({ device_id }) => {
@@ -116,7 +117,7 @@ export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps
                     onClick={() => {
                         if (player) {
                             if (deviceId) {
-                                spotifyClient.playRandomTrack(spotifyTracks, deviceId, DEFAULT_OFFSET_MS)
+                                spotifyClient.playRandomTrack(spotifyTracks, deviceId, startTime)
                             }
                             player.activateElement()
                             setRestricted(false)

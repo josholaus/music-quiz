@@ -1,3 +1,4 @@
+import { DEFAULT_OFFSET_S } from '@lib/constants'
 import { createContext, useContext, useMemo, useState } from 'react'
 
 export const AppContext = createContext(undefined)
@@ -13,6 +14,10 @@ export const useGlobalContext = () => {
 export const AppProvider = (props: any) => {
     const [currentTrack, setCurrentTrack] = useState<Spotify.Track | null>(null)
     const [revealed, setRevealed] = useState(false)
-    const value = useMemo(() => ({ currentTrack, setCurrentTrack, revealed, setRevealed }), [currentTrack, revealed])
+    const [startTime, setStartTime] = useState(DEFAULT_OFFSET_S * 1000)
+    const value = useMemo(
+        () => ({ currentTrack, setCurrentTrack, revealed, setRevealed, startTime, setStartTime }),
+        [currentTrack, revealed, startTime],
+    )
     return <AppContext.Provider value={value} {...props} />
 }

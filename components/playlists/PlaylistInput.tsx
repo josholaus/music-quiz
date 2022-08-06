@@ -4,6 +4,9 @@ import { GeneralButton } from '@components/buttons'
 import { Title } from '@components/headings'
 import { LoadingComponent } from '@components/misc'
 import SpotifyClient from '@lib/spotifyClient'
+import StartTimeSlider from './StartTimeSlider'
+import { DEFAULT_OFFSET_S } from '@lib/constants'
+import { useGlobalContext } from '@components/context'
 
 interface PlaylistInputProps {
     setSpotifyTracks: (tracks: SpotifyApi.TrackObjectFull[]) => void
@@ -13,6 +16,12 @@ interface PlaylistInputProps {
 export default function PlaylistInput(props: PlaylistInputProps) {
     const [value, setValue] = useState('')
     const [loading, setLoading] = useState(false)
+    const [startTimeLocal, setStartTimeLocal] = useState(DEFAULT_OFFSET_S)
+    const {
+        setStartTime,
+    }: {
+        setStartTime: (startTime: number) => void
+    } = useGlobalContext()
     const spotifyClient = new SpotifyClient(props.accessToken)
 
     useEffect(() => {
@@ -87,6 +96,7 @@ export default function PlaylistInput(props: PlaylistInputProps) {
             alert('No tracks found')
             return
         }
+        setStartTime(startTimeLocal * 1000)
         props.setSpotifyTracks(uniqueTracks)
     }
 
@@ -104,6 +114,12 @@ export default function PlaylistInput(props: PlaylistInputProps) {
                 className="w-full p-3 border border-gray-500 rounded-md"
                 defaultValue={value}
                 onChange={(event) => setValue(event.target.value)}></textarea>
+            <StartTimeSlider
+                setStartTime={(value) => setStartTimeLocal(value)}
+                min={0}
+                max={100}
+                value={startTimeLocal}
+            />
             <GeneralButton className="px-12" onClick={() => submit()}>
                 Submit
             </GeneralButton>

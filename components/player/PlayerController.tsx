@@ -1,4 +1,4 @@
-import { DEFAULT_OFFSET_MS } from '@lib/constants'
+import { useGlobalContext } from '@components/context'
 import SpotifyClient from '@lib/spotifyClient'
 import { useRouter } from 'next/router'
 
@@ -15,6 +15,7 @@ var isChanging = false
 
 export default function PlayerController(props: PlayerControllerProps) {
     const router = useRouter()
+    const { startTime } = useGlobalContext()
 
     const togglePlay = async () => {
         if (toggling) {
@@ -38,7 +39,7 @@ export default function PlayerController(props: PlayerControllerProps) {
             router.reload()
             return
         }
-        await props.spotifyClient.playRandomTrack(props.spotifyTracks, props.deviceId, DEFAULT_OFFSET_MS)
+        await props.spotifyClient.playRandomTrack(props.spotifyTracks, props.deviceId, startTime)
         isChanging = false
     }
 
