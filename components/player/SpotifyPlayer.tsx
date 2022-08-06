@@ -69,10 +69,14 @@ export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps
                 console.log('Player State Changed', state)
                 setPlayerState(state)
                 if (state) {
-                    if (!currentTrack || !state.track_window.current_track || currentTrack.id != state.track_window.current_track.id) {
+                    // Track has changed, hide track info
+                    if (currentTrack 
+                        && (!state.track_window.current_track 
+                        || currentTrack.id != state.track_window.current_track.id)) {
                         setRevealed(false)
                     }
                     setCurrentTrack(state.track_window.current_track)
+                    // If the playback was transferred, Spotify sends us a null uri for whatever reason
                     setActive(state.context.uri != null)
                 } else {
                     setActive(false)
