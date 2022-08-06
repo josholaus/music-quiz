@@ -1,15 +1,22 @@
+import { DEFAULT_OFFSET_MS } from '@lib/constants'
+import SpotifyClient from '@lib/spotifyClient'
+import { useRouter } from 'next/router'
 import React from 'react'
 
 interface PlayerControllerProps {
     player: Spotify.Player
     playerState: Spotify.PlaybackState
-    deviceId: string | null
+    deviceId: string
+    spotifyClient: SpotifyClient
+    spotifyTracks: SpotifyApi.TrackObjectFull[]
 }
 
 var toggling = false
 var isChanging = false
 
 export default function PlayerController(props: PlayerControllerProps) {
+    const router = useRouter()
+
     const togglePlay = async () => {
         if (toggling) {
             return
@@ -28,8 +35,11 @@ export default function PlayerController(props: PlayerControllerProps) {
             return
         }
         isChanging = true
-        alert('noop')
-        //await props.player.nextTrack()
+        if (props.spotifyTracks.length == 0) {
+            router.reload()
+            return
+        }
+        props.spotifyClient.playRandomTrack(props.spotifyTracks, props.deviceId, DEFAULT_OFFSET_MS)
         isChanging = false
     }
 

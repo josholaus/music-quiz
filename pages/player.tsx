@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { SpotifyPlayer } from '@components/player/SpotifyPlayer'
 import { useEffect, useState } from 'react'
 import { Title } from '@components/headings'
+import { PlaylistInput } from '@components/playlists'
 
 interface PlayerProps {
     access_token?: string
@@ -13,6 +14,7 @@ interface PlayerProps {
 const Player: NextPage = ({ access_token, refresh_token }: PlayerProps) => {
     const [accessToken, setAccessToken] = useState(access_token)
     const [refreshToken, setRefreshToken] = useState(refresh_token)
+    const [spotifyTracks, setSpotifyTracks] = useState<SpotifyApi.TrackObjectFull[]>([])
 
     useEffect(() => {
         if (!refreshToken) {
@@ -39,7 +41,17 @@ const Player: NextPage = ({ access_token, refresh_token }: PlayerProps) => {
             </div>
         )
     }
-    return <SpotifyPlayer initialAccessToken={accessToken.toString()} initialRefreshToken={refreshToken.toString()} />
+
+    if (spotifyTracks.length === 0) {
+        return (
+            <PlaylistInput
+                setSpotifyTracks={(tracks: SpotifyApi.TrackObjectFull[]) => setSpotifyTracks(tracks)}
+                accessToken={accessToken}
+            />
+        )
+    }
+
+    return <SpotifyPlayer accessToken={accessToken.toString()} spotifyTracks={spotifyTracks} />
 }
 
 Player.getInitialProps = ({ query }: any) => {

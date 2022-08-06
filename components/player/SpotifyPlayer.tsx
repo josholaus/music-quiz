@@ -1,19 +1,19 @@
 import { useGlobalContext } from '@components/context'
 import { LoadingComponent } from '@components/misc'
+import { DEFAULT_OFFSET_MS } from '@lib/constants'
+import SpotifyClient from '@lib/spotifyClient'
 import { useEffect, useState } from 'react'
 import PlayerError from './PlayerError'
 import PlayerParent from './PlayerParent'
 import PlayerTransferred from './PlayerTransferred'
 
-interface Props {
-    initialAccessToken: string
-    initialRefreshToken: string
+interface SpotifyPlayerProps {
+    accessToken: string
+    spotifyTracks: SpotifyApi.TrackObjectFull[]
 }
 
-export function SpotifyPlayer({ initialAccessToken, initialRefreshToken }: Props) {
+export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps) {
     const [player, setPlayer] = useState<Spotify.Player | null>(null)
-    const [accessToken, setAccessToken] = useState<string>(initialAccessToken)
-    const [refreshToken, setRefreshToken] = useState<string>(initialRefreshToken)
 
     const [ready, setReady] = useState<boolean>(false)
     const [active, setActive] = useState<boolean>(false)
@@ -21,6 +21,8 @@ export function SpotifyPlayer({ initialAccessToken, initialRefreshToken }: Props
 
     const [playerState, setPlayerState] = useState<Spotify.PlaybackState | null>(null)
     const [deviceId, setDeviceId] = useState<string | null>(null)
+
+    const spotifyClient = new SpotifyClient(accessToken)
 
     const {
         currentTrack,
@@ -55,6 +57,7 @@ export function SpotifyPlayer({ initialAccessToken, initialRefreshToken }: Props
             playerObject.addListener('ready', ({ device_id }) => {
                 console.log('Ready with Device ID', device_id)
                 setDeviceId(device_id)
+                spotifyClient.playRandomTrack(spotifyTracks, device_id, DEFAULT_OFFSET_MS)
                 setReady(true)
             })
             playerObject.addListener('not_ready', ({ device_id }) => {
@@ -66,7 +69,7 @@ export function SpotifyPlayer({ initialAccessToken, initialRefreshToken }: Props
                 console.log('Player State Changed', state)
                 setPlayerState(state)
                 if (state) {
-                    if (currentTrack != state.track_window.current_track) {
+                    if (!currentTrack || !state.track_window.current_track || currentTrack.id != state.track_window.current_track.id) {
                         setRevealed(false)
                     }
                     setCurrentTrack(state.track_window.current_track)
@@ -86,7 +89,7 @@ export function SpotifyPlayer({ initialAccessToken, initialRefreshToken }: Props
         }
     }, [])
 
-    if (!ready || !player) {
+    if (!ready || !player || !playerState) {
         return <LoadingComponent />
     }
 
@@ -94,10 +97,9 @@ export function SpotifyPlayer({ initialAccessToken, initialRefreshToken }: Props
         return <PlayerError error={error} />
     }
 
-    if (!active || !playerState) {
-        // TODO: Better playback transferred component
+    if (!active) {
         return <PlayerTransferred />
     }
 
-    return <PlayerParent player={player} playerState={playerState} deviceId={deviceId} />
+    return <PlayerParent player={player} playerState={playerState} deviceId={deviceId ?? ''} spotifyTracks={spotifyTracks} spotifyClient={spotifyClient} />
 }

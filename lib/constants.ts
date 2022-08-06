@@ -1,0 +1,3 @@
+const DEFAULT_OFFSET_MS = 30 * 1000
+
+export { DEFAULT_OFFSET_MS }
