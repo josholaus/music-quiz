@@ -39,7 +39,7 @@ export default function PlayerController(props: PlayerControllerProps) {
             router.reload()
             return
         }
-        props.spotifyClient.playRandomTrack(props.spotifyTracks, props.deviceId, DEFAULT_OFFSET_MS)
+        await props.spotifyClient.playRandomTrack(props.spotifyTracks, props.deviceId, DEFAULT_OFFSET_MS)
         isChanging = false
     }
 
