@@ -1,5 +1,6 @@
 import { useGlobalContext } from '@components/context'
 import React from 'react'
+import Image from 'next/image'
 
 interface PlayerCoverProps {
     currentTrack: Spotify.Track
@@ -28,7 +29,13 @@ export default function PlayerCover(props: PlayerCoverProps) {
             className={`w-72 sm:w-44 mx-8 ${revealed ? '' : 'cursor-pointer'}`}
             title={revealed ? '' : 'Click to reveal'}
             onClick={() => clickCover()}>
-            <img className="rounded-md shadow-md" src={revealed ? coverUrl : questionUrl} />
+            <picture>
+                <img
+                    className="rounded-md shadow-md"
+                    src={revealed ? coverUrl : questionUrl}
+                    alt={props.currentTrack.name}
+                />
+            </picture>
         </div>
     )
 }

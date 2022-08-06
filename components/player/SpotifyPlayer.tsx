@@ -93,6 +93,9 @@ export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps
                 console.log(connected ? 'Successfully connected to Spotify' : 'Failed to connect to Spotify')
             })
         }
+        return () => {
+            document.body.removeChild(scriptTag)
+        }
     }, [])
 
     if (!ready || !player || !playerState) {

@@ -16,7 +16,7 @@ export default function PlayerProgress(props: PlayerProgressProps) {
     const [maxTime, setMaxTime] = useState(Math.floor(props.playerState.duration / 1000))
 
     useEffect(() => {
-        setInterval(async () => {
+        const interval = setInterval(async () => {
             const state = await props.player.getCurrentState()
             if (state) {
                 setPlayerState(state)
@@ -24,7 +24,10 @@ export default function PlayerProgress(props: PlayerProgressProps) {
                 setMaxTime(Math.floor(state.duration / 1000))
             }
         }, 500)
-    }, [])
+        return () => {
+            clearInterval(interval)
+        }
+    }, [props.player])
 
     const remainingTime = () => {
         return maxTime - time

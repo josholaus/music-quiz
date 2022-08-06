@@ -1,5 +1,6 @@
 import React from 'react'
 import { useGlobalContext } from './context'
+import Image from 'next/image'
 
 const Layout = (props: { children: React.ReactNode }) => {
     const {
@@ -18,14 +19,16 @@ const Layout = (props: { children: React.ReactNode }) => {
                 </div>
             </div>
             <div className={revealed ? 'w-screen h-full absolute -z-10 bg-black overflow-hidden' : 'hidden'}>
-                <img
-                    src={currentTrack?.album.images[0].url}
-                    alt={currentTrack?.name}
-                    className="w-full h-full object-cover scale-110 opacity-70"
-                    style={{
-                        filter: 'blur(7px)',
-                    }}
-                />
+                <picture>
+                    <img
+                        src={currentTrack?.album.images[0].url}
+                        alt={currentTrack?.name}
+                        className="w-full h-full object-cover scale-110 opacity-70"
+                        style={{
+                            filter: 'blur(7px)',
+                        }}
+                    />
+                </picture>
             </div>
         </div>
     )
