@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Title } from '@components/headings'
 import { GeneralButton } from '@components/buttons'
@@ -14,6 +14,18 @@ export default function PlaylistInput(props: PlaylistInputProps) {
     const [value, setValue] = useState('')
     const [loading, setLoading] = useState(false)
     const spotifyClient = new SpotifyClient(props.accessToken)
+
+    useEffect(() => {
+        if (value === '') {
+            console.log("XD")
+            const storage = localStorage.getItem('playlist-input')
+            if (storage) {
+                setValue(storage)
+            }
+            return
+        }
+        localStorage.setItem('playlist-input', value)
+    }, [value])
 
     const validateUrls = () => {
         const urls = value.split('\n').filter((url) => url.length > 0)
@@ -91,6 +103,7 @@ export default function PlaylistInput(props: PlaylistInputProps) {
                 id="playlist-values"
                 placeholder="Playlist URLs"
                 className="w-full p-3 border border-gray-500 rounded-md"
+                defaultValue={value}
                 onChange={(event) => setValue(event.target.value)}></textarea>
             <GeneralButton className="px-12" onClick={() => submit()}>
                 Submit
