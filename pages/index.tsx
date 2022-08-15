@@ -9,9 +9,9 @@ const Home: NextPage = () => (
         <div className="flex flex-col space-y-4">
             <MegaTitle>Music Quiz</MegaTitle>
             <p>
-                Hey there! As of now, this app is in <span className="font-bold">closed beta mode</span>.<br />
-                If you have already been invited by either Nico or Josh, click the button below and login with your
-                Spotify account!
+                Please note that you have to be invited by the owner of this application in order to be able to play
+                music quiz.
+                <br /> If you are already invited, please click the button below to start playing.
             </p>
             <SpotifyButton link="/api/login">Connect to Spotify</SpotifyButton>
             <Quote className="text-xs" author="Rick Sanchez">
