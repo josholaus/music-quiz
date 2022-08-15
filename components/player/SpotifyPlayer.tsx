@@ -80,7 +80,8 @@ export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps
                 console.log('Player State Changed', state)
                 if (state) {
                     // Track has changed, hide track info
-                    if (playerStateRef.current?.track_window.current_track.id != state.track_window.current_track.id) {
+                    if (playerStateRef.current?.track_window.current_track && state.track_window.current_track &&
+                        playerStateRef.current?.track_window.current_track.id != state.track_window.current_track.id) {
                         setRevealed(false)
                     }
                     setPlayerState(state)
