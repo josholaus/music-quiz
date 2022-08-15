@@ -2,7 +2,7 @@ import { GeneralButton } from '@components/buttons'
 import { useGlobalContext } from '@components/context'
 import { LoadingComponent } from '@components/misc'
 import SpotifyClient from '@lib/spotifyClient'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import PlayerError from './PlayerError'
 import PlayerParent from './PlayerParent'
 import PlayerTransferred from './PlayerTransferred'
@@ -14,33 +14,36 @@ interface SpotifyPlayerProps {
 
 // The spotify-web-playback-sdk typings are out of date (haven't been updated in 1 year+) ... there are new functions
 type SpotifyOutOfBetaPolyfill = {
-    activateElement: () => void
+    activateElement: () => Promise<void>
 }
 
 export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps) {
-    const [player, setPlayer] = useState<Spotify.Player & SpotifyOutOfBetaPolyfill | null>(null)
+    const [player, setPlayer] = useState<(Spotify.Player & SpotifyOutOfBetaPolyfill) | null>(null)
 
     const [ready, setReady] = useState<boolean>(false)
     const [active, setActive] = useState<boolean>(false)
     const [error, setError] = useState<Spotify.Error | null>(null)
 
     const [playerState, setPlayerState] = useState<Spotify.PlaybackState | null>(null)
+    const playerStateRef = useRef(playerState)
     const [deviceId, setDeviceId] = useState<string | null>(null)
     const [restricted, setRestricted] = useState<boolean>(false)
 
     const spotifyClient = new SpotifyClient(accessToken)
 
     const {
-        currentTrack,
         setCurrentTrack,
         setRevealed,
         startTime,
     }: {
-        currentTrack: Spotify.Track | null
         setCurrentTrack: (track: Spotify.Track | null) => void
-        setRevealed: (revealed: boolean) => void,
+        setRevealed: (revealed: boolean) => void
         startTime: number
     } = useGlobalContext()
+
+    useEffect(() => {
+        playerStateRef.current = playerState
+    })
 
     useEffect(() => {
         const scriptTag = document.createElement('script')
@@ -75,21 +78,18 @@ export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps
             })
             playerObject.addListener('player_state_changed', (state) => {
                 console.log('Player State Changed', state)
-                setPlayerState(state)
                 if (state) {
                     // Track has changed, hide track info
-                    if (
-                        !currentTrack ||
-                        !state.track_window.current_track ||
-                        currentTrack.id != state.track_window.current_track.id
-                    ) {
+                    if (playerStateRef.current?.track_window.current_track.id != state.track_window.current_track.id) {
                         setRevealed(false)
                     }
+                    setPlayerState(state)
                     setCurrentTrack(state.track_window.current_track)
                     // If the playback was transferred, Spotify sends us a null uri for whatever reason
                     setActive(state.context.uri != null)
                 } else {
                     setActive(false)
+                    setPlayerState(state)
                 }
                 setError(null)
             })
@@ -115,13 +115,13 @@ export function SpotifyPlayer({ accessToken, spotifyTracks }: SpotifyPlayerProps
             <div>
                 <GeneralButton
                     onClick={() => {
-                        if (player) {
-                            if (deviceId) {
-                                spotifyClient.playRandomTrack(spotifyTracks, deviceId, startTime)
-                            }
-                            player.activateElement()
-                            setRestricted(false)
+                        if (!player) {
+                            return
                         }
+                        setRestricted(false)
+                        player.activateElement().then(() => {
+                            player.resume()
+                        })
                     }}>
                     Connect
                 </GeneralButton>
